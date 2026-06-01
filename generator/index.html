@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IndiaFOSS 2026 — Speaker Poster Generator</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Bebas Neue', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100 font-sans min-h-screen">
+
+<div id="app">
+
+  <!-- ━━ App header ━━ -->
+  <header class="bg-white border-b border-gray-200 px-4 sm:px-8 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+    <div>
+      <h1 class="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">IndiaFOSS 2026</h1>
+      <p class="text-sm text-gray-500">Speaker Poster Generator</p>
+    </div>
+    <nav class="flex gap-1 bg-gray-100 rounded-lg p-1">
+      <button
+        @click="mode = 'single'"
+        :class="mode === 'single'
+          ? 'bg-white text-gray-900 shadow-sm'
+          : 'text-gray-500 hover:text-gray-700'"
+        class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-md transition-all">
+        <i data-lucide="user" class="w-4 h-4"></i> Single
+      </button>
+      <button
+        @click="mode = 'bulk'"
+        :class="mode === 'bulk'
+          ? 'bg-white text-gray-900 shadow-sm'
+          : 'text-gray-500 hover:text-gray-700'"
+        class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-md transition-all">
+        <i data-lucide="table" class="w-4 h-4"></i> Bulk CSV
+      </button>
+    </nav>
+  </header>
+
+  <!-- ━━ Single mode ━━ -->
+  <main v-if="mode === 'single'" class="mx-auto px-4 sm:px-8 py-8">
+    <div class="flex flex-col-reverse lg:flex-row gap-8 lg:gap-12 items-start justify-center">
+
+      <!-- Form panel -->
+      <div class="form-panel-single w-full lg:w-[400px] flex-shrink-0 space-y-5">
+
+        <div>
+          <label class="block mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Track</label>
+          <select v-model="form.track" class="form-input">
+            <option v-for="t in trackNames" :key="t" :value="t">{{ t }}</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Talk Category</label>
+          <select v-model="form.category" class="form-input">
+            <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Talk Title</label>
+          <input v-model="form.title" type="text" class="form-input" placeholder="Talk title goes here...">
+        </div>
+
+        <div>
+          <label class="block mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Talk Description</label>
+          <textarea v-model="form.description" rows="3" class="form-input" placeholder="Short description of the talk..."></textarea>
+        </div>
+
+        <div>
+          <label class="block mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Speaker's Name</label>
+          <input v-model="form.name" type="text" class="form-input" placeholder="Full name">
+        </div>
+
+        <div>
+          <label class="block mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Designation</label>
+          <input v-model="form.designation" type="text" class="form-input" placeholder="Role & Organisation">
+        </div>
+
+        <div>
+          <label class="block mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Profile Picture (square transparent PNG)</label>
+          <input type="file" accept="image/*" @change="handleImage" class="form-input text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:uppercase file:bg-gray-200 file:text-gray-600 file:cursor-pointer">
+        </div>
+
+        <!-- Track color preview -->
+        <div class="flex items-center gap-3 pt-1">
+          <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Track colour</span>
+          <span class="inline-block w-10 h-6 rounded" :style="{ background: cardGradient }"></span>
+          <span class="text-xs font-medium" :style="{ color: activeTrack.accent }">{{ form.track }}</span>
+        </div>
+
+        <!-- Download buttons -->
+        <div class="flex gap-3 pt-2">
+          <button @click="downloadCard('png')" class="flex-1 inline-flex items-center justify-center gap-2 bg-gray-900 text-white text-sm font-semibold uppercase tracking-wider py-3 rounded-lg hover:bg-gray-700 transition-colors">
+            <i data-lucide="download" class="w-4 h-4"></i> PNG
+          </button>
+          <button @click="downloadCard('jpeg')" class="flex-1 inline-flex items-center justify-center gap-2 bg-gray-900 text-white text-sm font-semibold uppercase tracking-wider py-3 rounded-lg hover:bg-gray-700 transition-colors">
+            <i data-lucide="download" class="w-4 h-4"></i> JPEG
+          </button>
+        </div>
+      </div>
+
+      <!-- Card preview -->
+      <div class="preview-wrapper" ref="previewWrapper">
+        <div ref="cardPreview" class="card-poster">
+
+          <!-- Background -->
+          <div class="card-bg">
+            <svg width="1081" height="1350" viewBox="0 0 1081 1350" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="593.688" cy="549.082" rx="830.769" ry="1014.07" transform="rotate(10.5825 593.688 549.082)" fill="url(#bgRadial1)"/>
+              <rect x="0.5" width="1080" height="1350" fill="url(#bgRadial2)"/>
+              <path d="M484.205 176.013H610.327L764.857 465.244H316.144L484.205 176.013Z" fill="url(#bgLine1)"/>
+              <path d="M395.201 176.013H707.88L906.606 382.122H174.395L395.201 176.013Z" fill="url(#bgLine2)"/>
+              <path d="M336.673 176.013H775.302L1054.08 293.602H26.9219L336.673 176.013Z" fill="url(#bgLine3)"/>
+              <defs>
+                <radialGradient id="bgRadial1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(593.688 549.082) rotate(90) scale(1014.07 830.769)">
+                  <stop offset="0.658" stop-color="#FAFAFA"/>
+                  <stop offset="0.942" stop-color="#FAFAFA" stop-opacity="0.1"/>
+                </radialGradient>
+                <radialGradient id="bgRadial2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(540.5 31.96) rotate(90) scale(1424.27 1199.54)">
+                  <stop offset="0.667" stop-color="white" stop-opacity="0"/>
+                  <stop offset="0.929" stop-color="#989898" stop-opacity="0.2"/>
+                </radialGradient>
+                <linearGradient id="bgLine1" x1="547.27" y1="176.01" x2="547.27" y2="465.24" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#C5C5C5" stop-opacity="0.26"/><stop offset="1" stop-color="#FAFAFA" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="bgLine2" x1="551.54" y1="176.01" x2="551.54" y2="382.12" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#C5C5C5" stop-opacity="0.3"/><stop offset="1" stop-color="#FAFAFA" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="bgLine3" x1="555.99" y1="176.01" x2="555.99" y2="293.6" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#C5C5C5" stop-opacity="0.3"/><stop offset="1" stop-color="#FAFAFA" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+
+          <!-- Header -->
+          <div class="card-header">
+            <div class="card-header-logo">
+              <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 931.49 319.06">
+                <defs><style>.if1{fill-rule:evenodd}.if1,.if2{fill:#1a1a1a}.if3{fill:#fff}</style></defs>
+                <path class="if2" d="m253.79,186.07h26.01v-77.13h-26.01v77.13Zm-27.51,26.8V82.26h67.69v12.96h13.4v104.54h-13.4v13.07h-67.69v.04Z"/>
+                <path class="if2" d="m110.13,82.26h-29.23v130.07h29.23V82.26Z"/>
+                <path class="if2" d="m354.08,82.26h-29.23v130.07h29.23V82.26Z"/>
+                <path class="if2" d="m155.19,212.83h-27.54V82.26h81.05v130.57h-27.54v-103.89h-26.01v103.89h.04Z"/>
+                <path class="if1" d="m371.59,212.83h27.5v-51.92h26.01v51.92h27.5V82.26h-81.05v130.57h.04Zm53.55-80.2v-23.68h-26.01v23.68h26.01Z"/>
+                <path class="if2" d="m532.43,212.83h-27.58V82.26h67.81v26.69h-40.23v25.24h40.23v26.69h-40.23v52-.04Z"/>
+                <path class="if2" d="m587.1,82.26v130.57h81.2V82.26h-81.2Zm53.62,103.81h-26.08v-77.13h26.08v77.13Z"/>
+                <path class="if2" d="m767.02,108.94v-26.69h-81.2v78.57h53.66v25.24h-53.66v26.76h81.2v-78.68h-53.62v-25.2h53.62Z"/>
+                <path class="if2" d="m865.78,108.94v-26.69h-81.2v78.57h53.62v25.24h-53.62v26.76h81.2v-78.68h-53.62v-25.2h53.62Z"/>
+                <path class="if1" d="m931.49,21.83v250.99h-65.07v-27.89h37.18V49.72H43.72v195.22h562.41v27.89H15.84v-27.89h0V49.72h0v-27.89h915.66Z"/>
+                <g>
+                  <path class="if2" d="m676.16,244.81h-47.08v19.01h28.07v9.05h-28.07v46.18h47.08v-18.11h-28.07v-9.96h28.07v-46.18Z"/>
+                  <path class="if2" d="m741.36,244.81v19.01h27.16v9.05h-27.16v46.18h46.18v-18.11h-28.07v-9.96h28.07v-46.18h-46.18Z"/>
+                  <path class="if2" d="m842.76,262.92v-18.11h-46.18v46.18h28.07v9.05h-28.07v19.01h28.07s18.11,0,18.11,0h0s0,0,0,0v-46.18h-27.16v-9.96h27.16Z"/>
+                  <path class="if2" d="m731.39,244.81h-46.18v74.25h46.18v-74.25Zm-28.07,56.14v-37.12h9.96v37.12h-9.96Z"/>
+                </g>
+                <g>
+                  <polygon class="if2" points="281.58 0 277.78 0 267.46 0 262.92 0 252.91 0 248.94 0 241.07 0 236.8 0 92.69 0 88.55 0 85.63 0 0 0 0 58.06 6.8 70.29 90.79 70.29 92.69 70.27 288.25 70.27 288.4 12.23 281.58 0"/>
+                  <path class="if3" d="m99.63,26.17h17.25v28.72h-5.85v-22.84h-5.55v22.84h-5.85v-28.72ZM4.27,12.76v19.06h32.47v14.09h-19.87v-4.2H4.27v13.14h45.12v-10.84h-.02v-12.19h.02v-8.94H16.91v-10.12h32.49V4.28H4.27v8.48Zm73.51,42.12h5.85v-22.84h5.55v22.84h5.85v-28.72h-17.25v28.72Zm.51-33.4h4.39V4.28h-4.39v5.86h-4.03v-5.86h-4.39v17.21h4.39v-6.96h4.03v6.96Zm-19.02,0h4.39v-12.82h4.75v-4.39h-13.53v4.39h4.39v12.82Zm-3.34,4.66h17.25v28.72h-5.85v-11.43h-5.55v11.43h-5.85v-28.72Zm5.85,11.43h5.55v-5.55h-5.55v5.55Zm81.54,8.54h-2.85v2.85h-2.7v-22.82h-5.85v28.72h11.55v-2.87h2.85v-2.85h2.85v-22.97h-5.85v19.95Zm94.99-19.93h17.25v12.89h-4.14v4.22h4.14v11.6h-5.85v-11.43h-5.55v11.43h-5.85v-28.72Zm5.85,11.41h5.55v-5.55h-5.55v5.55Zm-27.7-11.43h17.25v28.72h-5.85v-11.43h-5.55v11.43h-5.85v-28.72Zm5.85,11.43h5.55v-5.55h-5.55v5.55Zm49.24-11.41v11.41h-5.55v-11.41h-5.85v17.27h5.7v11.43h5.85v-11.43h5.7v-17.27h-5.85Zm-98.79,0h17.25v12.89h-4.14v4.22h4.14v11.6h-5.85v-11.43h-5.55v11.43h-5.85v-28.72Zm5.85,11.41h5.55v-5.55h-5.55v5.55Zm-24.85,17.29h14.4v-5.9h-8.55v-5.55h8.55v-5.86h-8.55v-5.55h8.55v-5.86h-14.4v28.72Zm-32.3,0h5.85v-28.72h-5.85v28.72Zm75.99-28.62h-2.7v2.76h-.15v14.42h11.4v5.55h-11.4v5.9h14.4v-.1h2.85v-17.21h-11.4v-5.55h11.4v-5.86h-14.4v.1Zm71.32-21.98V0h-5.47v4.28h-12.75V0h-5.05v4.28H88.8v11.79h189.7V4.28h-9.71Z"/>
+                </g>
+              </svg>
+            </div>
+            <div class="card-header-dates">
+              <h4>SEPTEMBER 2026</h4>
+              <h4>BENGALURU</h4>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <div class="card-content">
+            <div class="card-talk-info">
+              <div class="card-category" :style="{ background: activeTrack.badgeBg }">
+                <span class="card-category-text" :style="{ color: activeTrack.accent }">
+                  {{ form.category || 'Talk' }}
+                </span>
+              </div>
+              <h1 class="card-title">{{ form.title || 'Talk Title goes here...' }}</h1>
+            </div>
+
+            <div class="card-speaker-row">
+              <div class="card-speaker-photo" :style="{ background: cardGradient }">
+                <img :src="imageDataUrl || placeholderImage" alt="Speaker">
+                <div class="card-shadow-overlay"></div>
+              </div>
+              <div class="card-speaker-info" :style="{ background: cardGradient }">
+                <div class="card-speaker-details">
+                  <div class="card-speaker-name">{{ form.name || 'Speaker Name' }}</div>
+                  <div class="card-speaker-designation">{{ form.designation || 'Designation' }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              v-if="form.description"
+              class="card-description"
+              :style="{ borderColor: activeTrack.accent }">
+              {{ form.description }}
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div class="card-footer">
+            <div class="card-footer-logo">
+              <svg width="72" height="56" viewBox="0 0 72 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.35 28.45H9.14V7.84h10.36v4.21h-6.14v3.98h6.14v4.21h-6.14v8.21Z" fill="#1A1A1A"/>
+                <path d="M25.64 24.23h3.98V12.05h-3.98v12.18Zm-2.16 4.23v-2.07h-2.05V9.89h2.05V7.84h8.31v2.05h2.05v16.5h-2.05v2.06h-8.31Zm-1.93-20.54h1.93v1.98h-1.93v-1.98Zm10.24-.07h2.05v2.05h-2.05V7.84Zm0 18.55h2.05v2h-2.05v-2Zm-10.36 0h2.05v2.06h-2.05v-2.06Z" fill="#1A1A1A"/>
+                <path d="M46.12 28.45H35.76v-4.22h8.2v-3.98h-6.15v-2.05h-2.05V9.89h2.05V7.84h10.36v4.21h-8.19v3.98h6.14v2.05h2.05v8.31h-2.05v2.05Zm-10.24-20.54h1.93v1.98h-1.93v-1.98Zm-.11 10.29h2.05v2.05h-2.05v-2.05Zm10.35-2.16h2.05v2.05h-2.05v-2.05Zm0 10.35h2.05v2h-2.05v-2Z" fill="#1A1A1A"/>
+                <path d="M60.46 28.45H50.1v-4.22h8.19v-3.98H52.15v-2.05H50.1V9.89h2.05V7.84h10.36v4.21h-8.19v3.98h6.14v2.05h2.05v8.31h-2.05v2.05Zm-10.24-20.54h1.93v1.98h-1.93v-1.98Zm-.12 10.29h2.05v2.05h-2.05v-2.05Zm10.36-2.16h2.05v2.05h-2.05v-2.05Zm0 10.35h2.05v2h-2.05v-2Z" fill="#1A1A1A"/>
+                <path d="M10.62 47.28v-1.49H9.14V32.36h3.04v11.86h2.88V32.36h3.04v13.43h-1.48v1.49h-5.99ZM9.14 45.79h1.48v1.49H9.14v-1.49Zm7.48 0h1.48v1.44h-1.48v-1.44Z" fill="#1A1A1A"/>
+                <path d="M22.54 47.28h-3.04V32.36h8.96v14.92h-3.04V35.41h-2.88v11.87Z" fill="#1A1A1A"/>
+                <path d="M32.91 47.28h-3.04V32.36h3.04v14.92Z" fill="#1A1A1A"/>
+                <path d="M40.31 47.28h-3.04V35.41h-2.96v-3.05h8.96v3.05h-2.96v11.87Z" fill="#1A1A1A"/>
+                <path d="M52.15 47.28h-7.48V32.36h7.48v3.05H47.7v2.88h4.44v3.05H47.7v2.88h4.44v3.06Z" fill="#1A1A1A"/>
+                <path d="M56.58 44.22h2.88V35.41h-2.88v8.81Zm-3.04 3.06V32.36h7.48v1.48h1.48v11.94h-1.48v1.49h-7.48Z" fill="#1A1A1A"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M.5 0h70.64v55.13H.5V0Zm2.75 2.75v49.62h65.14V2.75H3.25Z" fill="#1A1A1A"/>
+              </svg>
+            </div>
+            <div class="card-footer-dates">
+              <h5>For more details:</h5>
+              <h4>fossunited.org/indiafoss</h4>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ━━ Bulk mode ━━ -->
+  <main v-if="mode === 'bulk'" class="max-w-7xl mx-auto px-4 sm:px-8 py-8">
+
+    <!-- Upload + actions bar -->
+    <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div class="flex-1">
+          <label class="block text-sm font-semibold text-gray-700 mb-2">Upload Speaker CSV</label>
+          <input
+            type="file"
+            accept=".csv"
+            @change="handleCSV"
+            class="form-input text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:uppercase file:bg-gray-200 file:text-gray-600 file:cursor-pointer">
+        </div>
+        <div v-if="speakers.length" class="flex items-center gap-4">
+          <div class="text-sm text-gray-500">
+            <span class="font-bold text-gray-900">{{ bulkStats.total }}</span> speakers
+            &middot;
+            <span class="font-bold text-green-600">{{ bulkStats.withImage }}</span> with images
+          </div>
+          <button
+            @click="downloadAllCards('png')"
+            :disabled="isDownloading"
+            class="inline-flex items-center gap-2 bg-gray-900 text-white text-sm font-semibold uppercase tracking-wider px-5 py-2.5 rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+            <i data-lucide="archive" class="w-4 h-4"></i> Download All as ZIP
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div v-if="speakers.length" class="mb-4 relative w-full sm:w-96">
+      <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none"></i>
+      <input
+        v-model="bulkSearch"
+        type="text"
+        placeholder="Search speakers by name, title, or track..."
+        class="form-input w-full pl-9">
+    </div>
+
+    <!-- Speaker grid -->
+    <div v-if="speakers.length" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        v-for="(speaker, idx) in filteredSpeakers"
+        :key="idx"
+        class="speaker-grid-item bg-white rounded-xl border border-gray-200 overflow-hidden">
+
+        <!-- Track colour bar -->
+        <div class="h-1.5" :style="{ background: trackStyle(speaker.track).accent }"></div>
+
+        <div class="p-4 space-y-3">
+          <!-- Name + category -->
+          <div>
+            <h3 class="font-bold text-gray-900 text-base leading-tight">{{ speaker.name }}</h3>
+            <p class="text-sm text-gray-500 mt-0.5 line-clamp-2">{{ speaker.title || 'No title' }}</p>
+          </div>
+
+          <!-- Track + category badges -->
+          <div class="flex flex-wrap gap-1.5">
+            <span
+              class="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded"
+              :style="{
+                color: trackStyle(speaker.track).accent,
+                background: trackStyle(speaker.track).badgeBg,
+              }">
+              {{ speaker.category }}
+            </span>
+            <span class="text-xs font-medium text-gray-400 px-2 py-0.5 bg-gray-50 rounded">
+              {{ speaker.track }}
+            </span>
+          </div>
+
+          <!-- Image upload row -->
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0 border border-gray-200">
+              <img
+                v-if="speaker.imageDataUrl"
+                :src="speaker.imageDataUrl"
+                class="w-full h-full object-cover"
+                alt="">
+              <div v-else class="w-full h-full flex items-center justify-center text-gray-300">
+                <i data-lucide="user" class="w-5 h-5"></i>
+              </div>
+            </div>
+            <label class="flex-1 cursor-pointer inline-flex items-center gap-1.5">
+              <i data-lucide="image-plus" class="w-3.5 h-3.5 text-gray-400"></i>
+              <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 hover:text-gray-600 transition-colors">
+                {{ speaker.imageDataUrl ? 'Change' : 'Add image' }}
+              </span>
+              <input type="file" accept="image/*" class="hidden" @change="handleBulkImage($event, speaker)">
+            </label>
+            <button
+              v-if="speaker.imageDataUrl"
+              @click="removeBulkImage(speaker)"
+              class="inline-flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors"
+              title="Remove image">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Remove
+            </button>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex gap-2 pt-1">
+            <button
+              @click="loadSpeakerToForm(speaker)"
+              class="inline-flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-gray-900 transition-colors">
+              <i data-lucide="pencil" class="w-3.5 h-3.5"></i> Edit &amp; Preview
+            </button>
+            <button
+              @click="copyShareUrl(speaker)"
+              class="inline-flex items-center gap-1 text-xs font-semibold text-gray-400 hover:text-gray-600 transition-colors ml-auto">
+              <i data-lucide="link" class="w-3.5 h-3.5"></i> Copy link
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div v-if="!speakers.length" class="text-center py-20 text-gray-400">
+      <i data-lucide="file-spreadsheet" class="w-10 h-10 mx-auto mb-4 text-gray-300"></i>
+      <p class="text-lg font-medium mb-1 text-gray-500">No speakers loaded</p>
+      <p class="text-sm mb-5">Upload a CSV file to get started. Expected columns: Session Type, Track, Full Name, Title, Post desc.</p>
+      <div class="flex items-center justify-center gap-3">
+        <button
+          @click="loadSampleCSV"
+          class="inline-flex items-center gap-2 bg-gray-900 text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-gray-700 transition-colors">
+          <i data-lucide="sparkles" class="w-4 h-4"></i> Try sample data
+        </button>
+        <a
+          href="sample.csv"
+          download
+          class="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-gray-700 border border-gray-300 px-5 py-2.5 rounded-lg hover:border-gray-400 transition-colors">
+          <i data-lucide="download" class="w-4 h-4"></i> Download sample.csv
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- ━━ Download progress overlay ━━ -->
+  <div v-if="isDownloading" class="download-overlay">
+    <div class="bg-white rounded-2xl p-8 shadow-2xl text-center max-w-sm mx-4">
+      <div class="text-5xl mb-4">&#9881;</div>
+      <h3 class="text-lg font-bold text-gray-900 mb-2">Generating cards...</h3>
+      <p class="text-sm text-gray-500 mb-4">
+        {{ downloadProgress.current }} of {{ downloadProgress.total }} complete
+      </p>
+      <div class="w-full bg-gray-100 rounded-full h-2.5">
+        <div
+          class="bg-gray-900 h-2.5 rounded-full transition-all duration-300"
+          :style="{ width: (downloadProgress.total ? (downloadProgress.current / downloadProgress.total) * 100 : 0) + '%' }">
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ━━ Dependencies ━━ -->
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

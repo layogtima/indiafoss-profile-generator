@@ -1,0 +1,362 @@
+/* ──────────────────────────────────────────────────────
+   IndiaFOSS 2026 — Speaker Poster Generator
+   Card poster styles (pixel-perfect for 1080 × 1350 output)
+   UI chrome uses Tailwind; these are poster-only + overrides.
+   ────────────────────────────────────────────────────── */
+
+/* ── Card poster (the 1080×1350 downloadable image) ── */
+
+.card-poster {
+  width: 1080px;
+  height: 1350px;
+  padding: 80px 100px;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Inter', sans-serif;
+}
+
+.card-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background-color: #fafafa;
+  background-image:
+    linear-gradient(#dddddd 1px, transparent 1px),
+    linear-gradient(90deg, #dddddd 1px, transparent 1px);
+  background-size: 54px 54px;
+}
+
+.card-bg svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Header ── */
+
+.card-header {
+  position: relative;
+  z-index: 1;
+  background-color: #ffffff;
+  border: 1px solid #999999;
+  border-radius: 24px;
+  padding: 12px 24px;
+  min-height: 100px;
+  text-align: center;
+  display: flex;
+  width: 880px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-header-logo {
+  display: flex;
+  height: 70px;
+}
+
+.card-header-dates h4 {
+  margin: 4px;
+  color: #666666;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.card-header-dates {
+  text-align: right;
+}
+
+/* ── Content ── */
+
+.card-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  padding-inline: 20px;
+  align-items: center;
+  margin: 0;
+  width: 100%;
+}
+
+.card-talk-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.card-category {
+  border-radius: 12px;
+  padding: 8px 12px;
+  display: inline-block;
+  width: fit-content;
+  margin-bottom: 10px;
+}
+
+.card-category-text {
+  font-size: 22px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.card-title {
+  font-size: 54px;
+  font-weight: 700;
+  color: #1a1a1a;
+  line-height: 1.2;
+  letter-spacing: -1.6px;
+  margin: 0;
+  word-break: break-word;
+}
+
+/* ── Speaker row ── */
+
+.card-speaker-row {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding-top: 16px;
+  padding-bottom: 60px;
+  width: 100%;
+}
+
+.card-speaker-photo {
+  position: relative;
+  width: fit-content;
+  height: 220px;
+  border-radius: 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.card-speaker-photo img {
+  position: relative;
+  bottom: 0;
+  border-radius: 0 0 24px 24px;
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+}
+
+.card-shadow-overlay {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  border-radius: 0 0 24px 24px;
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(6deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.25) 10%, transparent 26%);
+  mix-blend-mode: multiply;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.card-speaker-info {
+  width: fit-content;
+  height: 220px;
+  border-radius: 24px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.card-speaker-details {
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  padding-left: 80px;
+}
+
+.card-speaker-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 52px;
+  font-weight: 400;
+  color: #fafafa;
+  line-height: 1.2;
+  letter-spacing: 1px;
+  text-align: right;
+}
+
+.card-speaker-designation {
+  font-size: 26px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.73);
+  line-height: 1.2;
+  letter-spacing: -0.4px;
+  text-align: right;
+}
+
+/* ── Description ── */
+
+.card-description {
+  position: relative;
+  z-index: 1;
+  font-size: 28px;
+  font-weight: 500;
+  color: #4b4b4b;
+  line-height: 1.5;
+  letter-spacing: -0.2px;
+  padding-left: 12px;
+  border-width: 0 0 0 6px;
+  border-style: solid;
+  width: 100%;
+}
+
+/* ── Footer ── */
+
+.card-footer {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(0deg, #ffffff 0%, rgba(255,255,255,0.4) 70%);
+  border: 1px solid #999999;
+  border-radius: 24px;
+  padding-inline: 32px;
+  padding-block: 24px;
+  display: flex;
+  width: 880px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-footer-logo {
+  display: flex;
+  height: 70px;
+  align-items: center;
+}
+
+.card-footer-dates {
+  text-align: right;
+}
+
+.card-footer-dates h5 {
+  margin: 4px;
+  color: #4b4b4b;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.4px;
+}
+
+.card-footer-dates h4 {
+  margin: 4px;
+  color: #4b4b4b;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+/* ── Preview wrapper (scaled view) ── */
+
+.preview-wrapper {
+  transform: scale(var(--preview-scale, 0.4));
+  transform-origin: top left;
+  width: calc(1080px * var(--preview-scale, 0.4));
+  height: calc(1350px * var(--preview-scale, 0.4));
+  flex-shrink: 0;
+}
+
+.preview-wrapper .card-poster {
+  outline: 3px dashed #999999;
+}
+
+/* ── Form overrides ── */
+
+.form-input {
+  width: 100%;
+  padding: 10px 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #666666;
+  border-radius: 8px;
+  border: 1px solid #dddddd;
+  background-color: #fafafa;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
+  background-color: #ffffff;
+  border-color: #666666;
+  color: #4b4b4b;
+}
+
+.form-input:hover {
+  background-color: #ffffff;
+  border-color: #666666;
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.08);
+  color: #4b4b4b;
+}
+
+/* ── Bulk speaker grid item ── */
+
+.speaker-grid-item {
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.speaker-grid-item:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* ── Download overlay ── */
+
+.download-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 1024px) {
+  .preview-wrapper {
+    --preview-scale: 0.35;
+  }
+}
+
+@media (max-width: 768px) {
+  .preview-wrapper {
+    --preview-scale: 0.3;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .preview-wrapper {
+    --preview-scale: calc((100vw - 32px) / 1080);
+  }
+}
+
+@media (max-width: 480px) {
+  .preview-wrapper {
+    --preview-scale: calc((100vw - 32px) / 1080);
+  }
+}
+
+/* On mobile, the form stretches full width */
+@media (max-width: 1023px) {
+  .form-panel-single {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
