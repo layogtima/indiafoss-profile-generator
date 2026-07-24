@@ -8,7 +8,7 @@
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -18,7 +18,6 @@
         extend: {
           fontFamily: {
             sans: ['Inter', 'sans-serif'],
-            display: ['Bebas Neue', 'sans-serif'],
           },
         },
       },
@@ -69,9 +68,9 @@
       <div class="form-panel-single w-full lg:w-[400px] flex-shrink-0 space-y-5">
 
         <div>
-          <label class="block mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Track</label>
+          <label class="block mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Devroom</label>
           <select v-model="form.track" class="form-input">
-            <option v-for="t in trackNames" :key="t" :value="t">{{ t }}</option>
+            <option v-for="t in devroomNames" :key="t" :value="t">{{ devroomStyle(t).label }}</option>
           </select>
         </div>
 
@@ -107,11 +106,11 @@
           <input type="file" accept="image/*" @change="handleImage" class="form-input text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:uppercase file:bg-gray-200 file:text-gray-600 file:cursor-pointer">
         </div>
 
-        <!-- Track color preview -->
+        <!-- Devroom colour preview -->
         <div class="flex items-center gap-3 pt-1">
-          <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Track colour</span>
-          <span class="inline-block w-10 h-6 rounded" :style="{ background: cardGradient }"></span>
-          <span class="text-xs font-medium" :style="{ color: activeTrack.accent }">{{ form.track }}</span>
+          <span class="text-xs font-semibold uppercase tracking-wider text-gray-400">Devroom colour</span>
+          <span class="inline-block w-6 h-6 rounded" :style="{ background: strokeColor }"></span>
+          <span class="text-xs font-medium" :style="{ color: accentColor }">{{ activeDevroom.label }}</span>
         </div>
 
         <!-- Download buttons -->
@@ -129,35 +128,11 @@
       <div class="preview-wrapper" ref="previewWrapper">
         <div ref="cardPreview" class="card-poster">
 
-          <!-- Background -->
-          <div class="card-bg">
-            <svg width="1081" height="1350" viewBox="0 0 1081 1350" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <ellipse cx="593.688" cy="549.082" rx="830.769" ry="1014.07" transform="rotate(10.5825 593.688 549.082)" fill="url(#bgRadial1)"/>
-              <rect x="0.5" width="1080" height="1350" fill="url(#bgRadial2)"/>
-              <path d="M484.205 176.013H610.327L764.857 465.244H316.144L484.205 176.013Z" fill="url(#bgLine1)"/>
-              <path d="M395.201 176.013H707.88L906.606 382.122H174.395L395.201 176.013Z" fill="url(#bgLine2)"/>
-              <path d="M336.673 176.013H775.302L1054.08 293.602H26.9219L336.673 176.013Z" fill="url(#bgLine3)"/>
-              <defs>
-                <radialGradient id="bgRadial1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(593.688 549.082) rotate(90) scale(1014.07 830.769)">
-                  <stop offset="0.658" stop-color="#FAFAFA"/>
-                  <stop offset="0.942" stop-color="#FAFAFA" stop-opacity="0.1"/>
-                </radialGradient>
-                <radialGradient id="bgRadial2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(540.5 31.96) rotate(90) scale(1424.27 1199.54)">
-                  <stop offset="0.667" stop-color="white" stop-opacity="0"/>
-                  <stop offset="0.929" stop-color="#989898" stop-opacity="0.2"/>
-                </radialGradient>
-                <linearGradient id="bgLine1" x1="547.27" y1="176.01" x2="547.27" y2="465.24" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="#C5C5C5" stop-opacity="0.26"/><stop offset="1" stop-color="#FAFAFA" stop-opacity="0"/>
-                </linearGradient>
-                <linearGradient id="bgLine2" x1="551.54" y1="176.01" x2="551.54" y2="382.12" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="#C5C5C5" stop-opacity="0.3"/><stop offset="1" stop-color="#FAFAFA" stop-opacity="0"/>
-                </linearGradient>
-                <linearGradient id="bgLine3" x1="555.99" y1="176.01" x2="555.99" y2="293.6" gradientUnits="userSpaceOnUse">
-                  <stop stop-color="#C5C5C5" stop-opacity="0.3"/><stop offset="1" stop-color="#FAFAFA" stop-opacity="0"/>
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
+          <!-- Decorative layers (band + doodles clipped to the torn edge) -->
+          <div class="card-decor" v-html="decorSvg"></div>
+
+          <!-- Foreground -->
+          <div class="card-fg">
 
           <!-- Header -->
           <div class="card-header">
@@ -187,45 +162,52 @@
               </svg>
             </div>
             <div class="card-header-dates">
-              <h4>SEPTEMBER 2026</h4>
+              <h4>25<sup>TH</sup> &ndash; 27<sup>TH</sup> SEPTEMBER 2026</h4>
               <h4>BENGALURU</h4>
             </div>
           </div>
 
-          <!-- Content -->
-          <div class="card-content">
-            <div class="card-talk-info">
-              <div class="card-category" :style="{ background: activeTrack.badgeBg }">
-                <span class="card-category-text" :style="{ color: activeTrack.accent }">
-                  {{ form.category || 'Talk' }}
-                </span>
-              </div>
-              <h1 class="card-title">{{ form.title || 'Talk Title goes here...' }}</h1>
-            </div>
+          <!-- Pills -->
+          <div class="card-pills">
+            <span class="card-pill card-pill-devroom" :style="{ background: pillBg, color: accentColor }">
+              {{ activeDevroom.label }}
+            </span>
+            <span class="card-pill card-pill-type" :style="{ color: accentColor }">
+              {{ form.category || 'Talk' }}
+            </span>
+          </div>
 
-            <div class="card-speaker-row">
-              <div class="card-speaker-photo" :style="{ background: cardGradient }">
-                <img :src="imageDataUrl || placeholderImage" alt="Speaker">
-                <div class="card-shadow-overlay"></div>
-              </div>
-              <div class="card-speaker-info" :style="{ background: cardGradient }">
-                <div class="card-speaker-details">
-                  <div class="card-speaker-name">{{ form.name || 'Speaker Name' }}</div>
-                  <div class="card-speaker-designation">{{ form.designation || 'Designation' }}</div>
-                </div>
+          <!-- Title -->
+          <h1 class="card-title">{{ form.title || 'Talk title goes here...' }}</h1>
+
+          <!-- Speaker photo + name card -->
+          <div class="card-people">
+            <div class="card-photo" :style="{ background: strokeColor }">
+              <img :src="imageDataUrl || placeholderImage" alt="Speaker">
+              <div class="card-photo-vignette"></div>
+              <div class="card-cursor">
+                <svg viewBox="0 0 40 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 3L5 39L15 29.5L21.5 41L27 38L20.5 27L34 27L5 3Z" fill="#ffffff" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/>
+                </svg>
               </div>
             </div>
-
-            <div
-              v-if="form.description"
-              class="card-description"
-              :style="{ borderColor: activeTrack.accent }">
-              {{ form.description }}
+            <div class="card-name">
+              <div class="card-name-title">{{ form.name || 'Name of the Speaker' }}</div>
+              <div class="card-name-sub">{{ form.designation || 'Designation of Speaker' }}</div>
             </div>
           </div>
 
+          <!-- Description -->
+          <div class="card-description">
+            {{ form.description || 'Talk description goes here — a short abstract of what the session covers.' }}
+          </div>
+
+          </div>
+          <!-- /Foreground -->
+
           <!-- Footer -->
           <div class="card-footer">
+            <span class="card-footer-url">FOSSUNITED.ORG/INDIAFOSS</span>
             <div class="card-footer-logo">
               <svg width="72" height="56" viewBox="0 0 72 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M13.35 28.45H9.14V7.84h10.36v4.21h-6.14v3.98h6.14v4.21h-6.14v8.21Z" fill="#1A1A1A"/>
@@ -240,10 +222,6 @@
                 <path d="M56.58 44.22h2.88V35.41h-2.88v8.81Zm-3.04 3.06V32.36h7.48v1.48h1.48v11.94h-1.48v1.49h-7.48Z" fill="#1A1A1A"/>
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M.5 0h70.64v55.13H.5V0Zm2.75 2.75v49.62h65.14V2.75H3.25Z" fill="#1A1A1A"/>
               </svg>
-            </div>
-            <div class="card-footer-dates">
-              <h5>For more details:</h5>
-              <h4>fossunited.org/indiafoss</h4>
             </div>
           </div>
 
@@ -300,8 +278,8 @@
         :key="idx"
         class="speaker-grid-item bg-white rounded-xl border border-gray-200 overflow-hidden">
 
-        <!-- Track colour bar -->
-        <div class="h-1.5" :style="{ background: trackStyle(speaker.track).accent }"></div>
+        <!-- Devroom colour bar -->
+        <div class="h-1.5" :style="{ background: devroomStyle(speaker.track).stroke }"></div>
 
         <div class="p-4 space-y-3">
           <!-- Name + category -->
@@ -315,8 +293,8 @@
             <span
               class="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded"
               :style="{
-                color: trackStyle(speaker.track).accent,
-                background: trackStyle(speaker.track).badgeBg,
+                color: devroomStyle(speaker.track).accent,
+                background: 'rgba(0,0,0,0.04)',
               }">
               {{ speaker.category }}
             </span>

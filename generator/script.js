@@ -3,44 +3,109 @@
  * Vue 3 Options API · Tailwind CSS · html2canvas
  */
 
-const TRACKS = {
-  'Main Track': {
-    accent: '#08b74f',
-    badgeBg: 'rgba(8, 183, 79, 0.15)',
-    cardFrom: '#191919',
-    cardTo: '#4e4e4e',
+/*
+ * Per-devroom theming.
+ *  - `label`   — text shown in the dropdown + the devroom pill
+ *  - `stroke`  — the torn-band + photo-card + line-art colour (README "Stroke")
+ *  - `doodle`  — the colour the doodle field renders in (lighter "bg" tone)
+ *  - `bake`    — the colour currently baked into the pattern SVG file; it is
+ *               string-replaced with `doodle` at load time
+ *  - `accent`  — pill text colour (a readable, deeper shade of stroke)
+ *  - `pattern` — the doodle-field SVG (served from generator/patterns/)
+ *
+ * The key (e.g. 'AOSP Devroom') is the canonical value matched against the CSV
+ * `Track` column and the ?track= query param — keep it stable.
+ */
+const DEVROOMS = {
+  'Open Design Devroom': {
+    label: 'Open Design Devroom',
+    stroke: '#FF4EC4', accent: '#E337AA',
+    doodle: '#FF95DB', bake: '#FF95DB',
+    pattern: 'patterns/open-design.svg',
   },
-  'FOSS in Science Devroom': {
-    accent: '#2563eb',
-    badgeBg: 'rgba(37, 99, 235, 0.12)',
-    cardFrom: '#0f1a3d',
-    cardTo: '#2c4a8a',
+  'Cloud and Devops Devroom': {
+    label: 'Cloud & Devops Devroom',
+    stroke: '#85A1FF', accent: '#5D7DF0',
+    doodle: '#85A1FF', bake: '#85A1FF',
+    pattern: 'patterns/cloud-and-devops.svg',
   },
-  'Geopolitics and Policy in FOSS Devroom': {
-    accent: '#e11d48',
-    badgeBg: 'rgba(225, 29, 72, 0.12)',
-    cardFrom: '#3d0f1a',
-    cardTo: '#8a2c4a',
+  'Compiler Devroom': {
+    label: 'Compiler Devroom',
+    stroke: '#E77D74', accent: '#D35849',
+    doodle: '#F0AEA8', bake: '#E77D74',
+    pattern: 'patterns/compiler.svg',
   },
-  'Android Open Source Project (AOSP) Devroom': {
-    accent: '#0d9488',
-    badgeBg: 'rgba(13, 148, 136, 0.12)',
-    cardFrom: '#0a2e2b',
-    cardTo: '#1a6b63',
+  'AOSP Devroom': {
+    label: 'AOSP Devroom',
+    stroke: '#00C603', accent: '#0A9E0C',
+    doodle: '#94FF96', bake: '#00C603',
+    pattern: 'patterns/aosp.svg',
+  },
+  'Documentation Devroom': {
+    label: 'Documentation Devroom',
+    stroke: '#A14CEC', accent: '#8B36D6',
+    doodle: '#E2C8F9', bake: '#A14CEC',
+    pattern: 'patterns/documentation.svg',
   },
   'Open Hardware Devroom': {
-    accent: '#d97706',
-    badgeBg: 'rgba(217, 119, 6, 0.12)',
-    cardFrom: '#3d2a0a',
-    cardTo: '#8a6020',
+    label: 'Open Hardware Devroom',
+    stroke: '#FABA75', accent: '#E08A2E',
+    doodle: '#FEB567', bake: '#FABA75',
+    pattern: 'patterns/open-hardware.svg',
   },
-  'Compilers, Programming Languages and Systems Devroom': {
-    accent: '#7c3aed',
-    badgeBg: 'rgba(124, 58, 237, 0.12)',
-    cardFrom: '#1f0a3d',
-    cardTo: '#4a2c8a',
+  'Security Devroom': {
+    label: 'Security Devroom',
+    stroke: '#04C7BD', accent: '#039B93',
+    doodle: '#87FDF7', bake: '#04C7BD',
+    pattern: 'patterns/security.svg',
+  },
+  'RTOS Devroom': {
+    label: 'RTOS Devroom',
+    stroke: '#A6AF00', accent: '#818800',
+    doodle: '#BACC5C', bake: '#A6AF00',
+    pattern: 'patterns/rtos.svg',
   },
 };
+
+const DEFAULT_DEVROOM = 'Open Design Devroom';
+
+/* The shared torn-band shape; #FF4EC4 gets recoloured to each devroom's stroke. */
+const BAND_SRC = 'patterns/band.svg';
+const BAND_BASE_COLOR = '#FF4EC4';
+
+/*
+ * The torn "edge-cut" region (from the reference design). The doodle field is
+ * clipped to this shape so it has a clean jagged boundary against the white
+ * card instead of bleeding edge-to-edge. Coordinates are in the 1080×1350 frame.
+ */
+const DECOR_MASK_PATH =
+  'M547.501 610.945L1108 473.445V1355.45H-27.9993V912.445L168.501 879.945L159.501 1155.45L330.001 950.945L493.501 1146.95V950.945L739.001 1077.95L601.001 785.445L896.001 746.445L547.501 610.945Z';
+
+/* Strip the outer <svg> wrapper so inner content can be re-composed. */
+function innerSvg(text) {
+  return text.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
+}
+
+/* Cache fetched SVG text so switching devrooms doesn't refetch. */
+const svgCache = {};
+async function loadSvg(url) {
+  if (svgCache[url] !== undefined) return svgCache[url];
+  try {
+    const res = await fetch(url);
+    svgCache[url] = await res.text();
+  } catch (e) {
+    svgCache[url] = '';
+  }
+  return svgCache[url];
+}
+
+function hexToRgba(hex, a) {
+  const h = hex.replace('#', '');
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+}
 
 const CATEGORIES = [
   'Talk',
@@ -96,8 +161,8 @@ function parseCSV(text) {
     const name = row['Full Name'] || '';
     if (!name) return acc;
 
-    const rawTrack = (row['Track'] || 'Main Track').replace(/^main track$/i, 'Main Track');
-    const track = TRACKS[rawTrack] ? rawTrack : 'Main Track';
+    const rawTrack = row['Track'] || DEFAULT_DEVROOM;
+    const track = DEVROOMS[rawTrack] ? rawTrack : DEFAULT_DEVROOM;
 
     acc.push({
       name,
@@ -126,7 +191,7 @@ createApp({
         description: '',
         name: '',
         designation: '',
-        track: 'Main Track',
+        track: DEFAULT_DEVROOM,
       },
       imageDataUrl: null,
       placeholderImage: PLACEHOLDER_IMAGE,
@@ -134,19 +199,25 @@ createApp({
       isDownloading: false,
       downloadProgress: { current: 0, total: 0 },
       bulkSearch: '',
+      decorSvg: '',
     };
   },
 
   computed: {
-    activeTrack() {
-      return TRACKS[this.form.track] || TRACKS['Main Track'];
+    activeDevroom() {
+      return DEVROOMS[this.form.track] || DEVROOMS[DEFAULT_DEVROOM];
     },
-    cardGradient() {
-      const t = this.activeTrack;
-      return `linear-gradient(-10deg, ${t.cardFrom} 0%, ${t.cardTo} 100%)`;
+    strokeColor() {
+      return this.activeDevroom.stroke;
     },
-    trackNames() {
-      return Object.keys(TRACKS);
+    accentColor() {
+      return this.activeDevroom.accent;
+    },
+    pillBg() {
+      return hexToRgba(this.activeDevroom.accent, 0.1);
+    },
+    devroomNames() {
+      return Object.keys(DEVROOMS);
     },
     categories() {
       return CATEGORIES;
@@ -193,10 +264,7 @@ createApp({
       if (type) this.form.category = type;
 
       const track = get('track', 'Track');
-      if (track) {
-        const normalized = track.replace(/^main track$/i, 'Main Track');
-        if (TRACKS[normalized]) this.form.track = normalized;
-      }
+      if (track && DEVROOMS[track]) this.form.track = track;
 
       const designation = get('designation');
       if (designation) this.form.designation = designation;
@@ -349,8 +417,24 @@ createApp({
         .replace(/^-|-$/g, '') || 'speaker';
     },
 
-    trackStyle(trackName) {
-      return TRACKS[trackName] || TRACKS['Main Track'];
+    devroomStyle(trackName) {
+      return DEVROOMS[trackName] || DEVROOMS[DEFAULT_DEVROOM];
+    },
+
+    /* ── Decorative layers, composed as one inline SVG ──
+       band (recoloured, behind) + doodle field clipped to the torn edge. */
+    async loadDecor() {
+      const d = this.activeDevroom;
+      const [bandRaw, doodleRaw] = await Promise.all([loadSvg(BAND_SRC), loadSvg(d.pattern)]);
+      const band = innerSvg(bandRaw).split(BAND_BASE_COLOR).join(d.stroke);
+      const doodles = innerSvg(doodleRaw).split(d.bake).join(d.doodle);
+      this.decorSvg =
+        '<svg width="1080" height="1350" viewBox="0 0 1080 1350" fill="none" ' +
+        'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">' +
+        '<defs><clipPath id="ifDecorClip"><path d="' + DECOR_MASK_PATH + '"/></clipPath></defs>' +
+        '<g transform="translate(0 441)">' + band + '</g>' +
+        '<g clip-path="url(#ifDecorClip)"><g transform="translate(0 473)">' + doodles + '</g></g>' +
+        '</svg>';
     },
 
     getShareUrl(speaker) {
@@ -383,8 +467,15 @@ createApp({
     },
   },
 
+  watch: {
+    'form.track'() {
+      this.loadDecor();
+    },
+  },
+
   mounted() {
     this.parseQueryString();
+    this.loadDecor();
     this.$nextTick(() => lucide.createIcons());
   },
 
