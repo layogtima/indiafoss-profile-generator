@@ -40,7 +40,7 @@
   inset: 0;
   z-index: 1;
   box-sizing: border-box;
-  padding: 48px 96px 140px;
+  padding: 43px 114px 0;
   display: flex;
   flex-direction: column;
 }
@@ -58,20 +58,21 @@
 }
 
 .card-header-logo svg {
-  height: 54px;
+  height: 78px;
   width: auto;
 }
 
 .card-header-dates {
   text-align: right;
+  margin-top: 12px;
 }
 
 .card-header-dates h4 {
   margin: 0 0 4px;
-  font-size: 22px;
-  font-weight: 800;
+  font-size: 18.23px;
+  font-weight: 600;
   color: #141414;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.02em;
 }
 
 .card-header-dates sup {
@@ -82,57 +83,65 @@
 /* ── Pills ── */
 
 .card-pills {
-  display: flex;
-  gap: 12px;
-  margin-top: 62px;
+  display: inline-flex;
+  gap: 6px;
+  margin-top: 78px;
 }
 
 .card-pill {
   display: inline-flex;
   align-items: center;
-  font-size: 23px;
+  font-size: 22px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   line-height: 1;
-  padding: 14px 24px;
-  border-radius: 999px;
+  padding: 17px 24px;
   white-space: nowrap;
+}
+
+/* Segmented pill: 14px on the outer corners, 8px where the two meet */
+.card-pill-devroom {
+  border-radius: 14px 8px 8px 14px;
 }
 
 .card-pill-type {
   background-color: #ffffff;
   border: 2px solid rgba(20, 20, 20, 0.12);
+  border-radius: 8px 14px 14px 8px;
 }
 
 /* ── Title ── */
 
 .card-title {
-  margin: 22px 0 0;
-  font-size: 68px;
-  font-weight: 800;
-  line-height: 1.08;
+  position: relative;
+  z-index: 2; /* keep the title above the photo card if a long title reaches it */
+  margin: 19px 0 0;
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 1.12;
   letter-spacing: -0.02em;
   color: #141414;
-  max-width: 920px;
+  max-width: 888px;
   word-break: break-word;
 }
 
 /* ── Speaker photo + name card ── */
 
+/* People + description are absolutely positioned to the design's exact
+   coordinates (1080×1350 frame) so they pixel-match the reference. */
 .card-people {
-  position: relative;
-  margin-top: 30px;
-  height: 360px;
+  position: absolute;
+  inset: 0;
 }
 
 .card-photo {
   position: absolute;
-  left: 8px;
-  top: 16px;
-  width: 300px;
-  height: 300px;
-  border-radius: 28px;
+  left: 139px;
+  top: 466px;
+  width: 358px;
+  height: 358px;
+  border-radius: 24px;
   overflow: hidden;
   transform: rotate(4deg);
   box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
@@ -147,17 +156,24 @@
   object-position: center;
 }
 
+/* Overlay 1 — devroom colour gradient (set inline) */
+.card-photo-color {
+  position: absolute;
+  inset: 0;
+}
+
+/* Overlay 2 — light-black gradient for depth */
 .card-photo-vignette {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 62%, rgba(0, 0, 0, 0.28) 100%);
+  background: linear-gradient(205deg, transparent 48%, rgba(0, 0, 0, 0.32) 100%);
 }
 
 .card-cursor {
   position: absolute;
-  left: -2px;
-  bottom: -4px;
-  width: 46px;
+  left: 6px;
+  bottom: 2px;
+  width: 44px;
   z-index: 3;
   filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.3));
 }
@@ -170,43 +186,47 @@
 
 .card-name {
   position: absolute;
-  left: 152px;
-  top: 244px;
+  left: 200px;
+  top: 760px;
   background-color: #ffffff;
-  border-radius: 22px;
-  padding: 22px 40px 24px 34px;
+  border: 2px solid #1a1a1a;
+  border-radius: 18px;
+  padding: 20px 38px 22px 32px;
   transform: rotate(-4deg);
-  box-shadow: 0 24px 44px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
 }
 
 .card-name-title {
-  font-size: 36px;
-  font-weight: 800;
+  font-size: 32px;
+  font-weight: 600;
   color: #1a1a1a;
   letter-spacing: -0.01em;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 .card-name-sub {
-  margin-top: 2px;
-  font-size: 27px;
-  font-weight: 500;
+  margin-top: 8px;
+  font-size: 28px;
+  font-weight: 400;
   color: #6f6f6f;
   letter-spacing: -0.01em;
-  line-height: 1.1;
+  line-height: 1.15;
 }
 
 /* ── Description ── */
 
 .card-description {
-  margin-top: auto;
-  background-color: #ffffff;
-  border: 1.5px solid rgba(20, 20, 20, 0.1);
-  border-radius: 26px;
-  padding: 34px 40px;
-  font-size: 30px;
+  position: absolute;
+  left: 114px;
+  top: 936px;
+  width: 851px;
+  box-sizing: border-box;
+  border: 1.5px solid rgba(20, 20, 20, 0.12);
+  border-radius: 20px;
+  padding: 32px 38px;
+  font-size: 26px;
   font-weight: 400;
-  line-height: 1.45;
+  line-height: 1.5;
   letter-spacing: -0.01em;
   color: #3a3a3a;
 }
@@ -242,6 +262,18 @@
 .card-footer-logo svg {
   height: 44px;
   width: auto;
+}
+
+/* ── Debug reference overlay (?debug) ── */
+
+.card-debug-overlay {
+  position: absolute;
+  inset: 4px 0 0 3px;
+  width: 1080px;
+  height: 1350px;
+  object-fit: fill;
+  pointer-events: none;
+  z-index: 99;
 }
 
 /* ── Preview wrapper (scaled view) ── */

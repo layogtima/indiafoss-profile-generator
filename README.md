@@ -63,6 +63,13 @@ Pills use a deeper, readable `accent` shade of the stroke (see `script.js`). The
 dropdown key (e.g. `AOSP Devroom`) is the exact value matched against the CSV `Track` column
 and the `?track=` query param.
 
+## Debug overlay
+
+Append `?debug` to the URL to ghost the reference mockup on top of the live card for
+pixel-comparison (Open Design & Cloud & Devops only — the two devrooms with reference PNGs in
+`generator/debug/`). Set the opacity with `?debug=0.3` (0–1, default 0.5). The overlay is
+`pointer-events:none` and is excluded from downloads, so it never bakes into an exported card.
+
 ## Output
 
 Cards render at **1080 × 1350px** (portrait social media format). Downloads use html2canvas; bulk export bundles into a ZIP via JSZip.

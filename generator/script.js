@@ -69,6 +69,12 @@ const DEVROOMS = {
 
 const DEFAULT_DEVROOM = 'Open Design Devroom';
 
+/* Reference mockups for the ?debug pixel-compare overlay (only these two exist). */
+const DEBUG_OVERLAYS = {
+  'Open Design Devroom': 'debug/open-design.png',
+  'Cloud and Devops Devroom': 'debug/cloud-and-devops.png',
+};
+
 /* The shared torn-band shape; #FF4EC4 gets recoloured to each devroom's stroke. */
 const BAND_SRC = 'patterns/band.svg';
 const BAND_BASE_COLOR = '#FF4EC4';
@@ -200,6 +206,8 @@ createApp({
       downloadProgress: { current: 0, total: 0 },
       bulkSearch: '',
       decorSvg: '',
+      debug: false,
+      debugOpacity: 0.5,
     };
   },
 
@@ -216,8 +224,18 @@ createApp({
     pillBg() {
       return hexToRgba(this.activeDevroom.accent, 0.1);
     },
+    photoColor() {
+      const s = this.activeDevroom.stroke;
+      return `linear-gradient(150deg, ${hexToRgba(s, 0)} 42%, ${hexToRgba(s, 0.7)} 100%)`;
+    },
+    descGradient() {
+      return `linear-gradient(180deg, #ffffff 0%, ${hexToRgba(this.activeDevroom.stroke, 0.06)} 100%)`;
+    },
     devroomNames() {
       return Object.keys(DEVROOMS);
+    },
+    debugOverlaySrc() {
+      return DEBUG_OVERLAYS[this.form.track] || null;
     },
     categories() {
       return CATEGORIES;
@@ -265,6 +283,14 @@ createApp({
 
       const track = get('track', 'Track');
       if (track && DEVROOMS[track]) this.form.track = track;
+
+      // ?debug — ghost the reference mockup over the card to pixel-compare.
+      // ?debug=0.3 sets the overlay opacity (0–1).
+      if (p.has('debug')) {
+        this.debug = true;
+        const o = parseFloat(p.get('debug'));
+        if (!isNaN(o) && o >= 0 && o <= 1) this.debugOpacity = o;
+      }
 
       const designation = get('designation');
       if (designation) this.form.designation = designation;
