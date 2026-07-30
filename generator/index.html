@@ -128,9 +128,6 @@
       <div class="preview-wrapper" ref="previewWrapper">
         <div ref="cardPreview" class="card-poster">
 
-          <!-- Decorative layers (band + doodles clipped to the torn edge) -->
-          <div class="card-decor" v-html="decorSvg"></div>
-
           <!-- Foreground -->
           <div class="card-fg">
 
@@ -161,8 +158,8 @@
           </div>
 
           <!-- Pills -->
-          <div class="card-pills">
-            <span class="card-pill card-pill-devroom" :style="{ background: pillBg, color: accentColor }">
+          <div class="card-pills" :style="{ '--pill-bg': pillBg }">
+            <span class="card-pill card-pill-devroom" :style="{ color: accentColor }">
               {{ activeDevroom.label }}
             </span>
             <span class="card-pill card-pill-type" :style="{ color: accentColor }">
@@ -175,29 +172,40 @@
 
           <!-- Speaker photo + name card -->
           <div class="card-people">
-            <div class="card-photo" :style="{ background: strokeColor }">
-              <img :src="imageDataUrl || placeholderImage" alt="Speaker">
-              <div class="card-photo-color" :style="{ background: photoColor }"></div>
-              <div class="card-photo-vignette"></div>
-              <div class="card-cursor">
-                <svg viewBox="0 0 40 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M5 3L5 39L15 29.5L21.5 41L27 38L20.5 27L34 27L5 3Z" fill="#ffffff" stroke="#ffffff" stroke-width="2.5" stroke-linejoin="round"/>
-                </svg>
+            <div class="card-photo">
+              <div class="card-photo-clip">
+                <div class="card-photo-bg-rect" :style="{ background: photoBgGradient }"></div>
+                <img :src="imageDataUrl || placeholderImage" alt="Speaker">
               </div>
             </div>
-            <div class="card-name">
-              <div class="card-name-title">{{ form.name || 'Name of the Speaker' }}</div>
-              <div class="card-name-sub">{{ form.designation || 'Designation of Speaker' }}</div>
+            <div class="card-name-group">
+              <div class="card-cursor">
+                <div class="card-cursor-shadow" aria-hidden="true" data-html-to-image-ignore="true"></div>
+                <img src="cursor.svg" alt="Cursor" style="width: 44.88px; height: 47.252px;">
+              </div>
+              <div class="card-name-wrap">
+                <div class="card-name">
+                  <div class="card-name-title">{{ form.name || 'Name of the Speaker' }}</div>
+                  <div class="card-name-sub">{{ form.designation || 'Designation of Speaker' }}</div>
+                </div>
+              </div>
             </div>
           </div>
 
           <!-- Description -->
-          <div class="card-description" :style="{ background: descGradient }">
-            {{ form.description || 'Talk description goes here — a short abstract of what the session covers.' }}
+          <div class="card-description" :style="{ backgroundImage: descBgGradient }">
+            <p class="card-description-text">
+              {{ form.description || 'Talk description goes here, a short abstract of what the session covers.' }}
+            </p>
           </div>
 
           </div>
           <!-- /Foreground -->
+
+          <!-- Devroom pattern background (above footer) -->
+          <div class="card-pattern-bg" v-if="patternImgUrl">
+            <img :src="patternImgUrl" alt="" aria-hidden="true">
+          </div>
 
           <!-- Footer -->
           <div class="card-footer">
@@ -225,7 +233,7 @@
             class="card-debug-overlay"
             :src="debugOverlaySrc"
             :style="{ opacity: debugOpacity }"
-            data-html2canvas-ignore="true"
+            data-html-to-image-ignore="true"
             alt="reference overlay">
 
         </div>
@@ -393,7 +401,7 @@
 
 <!-- ━━ Dependencies ━━ -->
 <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.13/dist/html-to-image.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 <script src="script.js"></script>

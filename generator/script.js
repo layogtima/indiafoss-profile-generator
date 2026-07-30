@@ -1,17 +1,14 @@
 /**
  * IndiaFOSS 2026 — Speaker Poster Generator
- * Vue 3 Options API · Tailwind CSS · html2canvas
+ * Vue 3 Options API · Tailwind CSS · html-to-image
  */
 
 /*
  * Per-devroom theming.
- *  - `label`   — text shown in the dropdown + the devroom pill
- *  - `stroke`  — the torn-band + photo-card + line-art colour (README "Stroke")
- *  - `doodle`  — the colour the doodle field renders in (lighter "bg" tone)
- *  - `bake`    — the colour currently baked into the pattern SVG file; it is
- *               string-replaced with `doodle` at load time
- *  - `accent`  — pill text colour (a readable, deeper shade of stroke)
- *  - `pattern` — the doodle-field SVG (served from generator/patterns/)
+ *  - `label`      — text shown in the dropdown + the devroom pill
+ *  - `stroke`     — photo-card border colour
+ *  - `accent`     — pill text colour (a readable, deeper shade of stroke)
+ *  - `patternImg` — the PNG background pattern image (from generator/patterns/)
  *
  * The key (e.g. 'AOSP Devroom') is the canonical value matched against the CSV
  * `Track` column and the ?track= query param — keep it stable.
@@ -20,50 +17,58 @@ const DEVROOMS = {
   'Open Design Devroom': {
     label: 'Open Design Devroom',
     stroke: '#FF4EC4', accent: '#E337AA',
-    doodle: '#FF95DB', bake: '#FF95DB',
-    pattern: 'patterns/open-design.svg',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 99.52%), linear-gradient(166deg, #EDA1D4 1.63%, #E337AA 65.28%)',
+    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #FFF0FA 118.15%)',
+    patternImg: 'patterns/open-design-devroom pattern.png',
   },
   'Cloud and Devops Devroom': {
     label: 'Cloud & Devops Devroom',
     stroke: '#85A1FF', accent: '#5D7DF0',
-    doodle: '#85A1FF', bake: '#85A1FF',
-    pattern: 'patterns/cloud-and-devops.svg',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #A3B8FF 1.63%, #4C76FF 65.28%)',
+    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #F3F4F7 118.15%)',
+    patternImg: 'patterns/cloud & devops devroom pattern.png',
   },
   'Compiler Devroom': {
     label: 'Compiler Devroom',
     stroke: '#E77D74', accent: '#D35849',
-    doodle: '#F0AEA8', bake: '#E77D74',
-    pattern: 'patterns/compiler.svg',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #EEA5A0 1.63%, #DF5447 65.28%)',
+    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #FCEFEE 118.15%)',
+    patternImg: 'patterns/compilers devroom pattern.png',
   },
   'AOSP Devroom': {
     label: 'AOSP Devroom',
     stroke: '#00C603', accent: '#0A9E0C',
-    doodle: '#94FF96', bake: '#00C603',
-    pattern: 'patterns/aosp.svg',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #C2FFC2 1.63%, #00B203 65.28%)',
+    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #EAFFEA 118.15%)',
+    patternImg: 'patterns/aosp devroom pattern.png',
   },
   'Documentation Devroom': {
     label: 'Documentation Devroom',
     stroke: '#A14CEC', accent: '#8B36D6',
-    doodle: '#E2C8F9', bake: '#A14CEC',
-    pattern: 'patterns/documentation.svg',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #C798FF 1.63%, #9C42EB 65.28%)',
+    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #F9F4FE 118.15%)',
+    patternImg: 'patterns/documention devroom pattern.png',
   },
   'Open Hardware Devroom': {
     label: 'Open Hardware Devroom',
     stroke: '#FABA75', accent: '#E08A2E',
-    doodle: '#FEB567', bake: '#FABA75',
-    pattern: 'patterns/open-hardware.svg',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #F9C58A 1.63%, #D56F01 65.28%)',
+    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #FFF0E1 118.15%)',
+    patternImg: 'patterns/open hardware devroom pattern.png',
   },
   'Security Devroom': {
     label: 'Security Devroom',
     stroke: '#04C7BD', accent: '#039B93',
-    doodle: '#87FDF7', bake: '#04C7BD',
-    pattern: 'patterns/security.svg',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #07EEE6 1.63%, #03B4AB 65.28%)',
+    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #E7FFFD 118.15%)',
+    patternImg: 'patterns/security devroom pattern.png',
   },
   'RTOS Devroom': {
     label: 'RTOS Devroom',
     stroke: '#A6AF00', accent: '#818800',
-    doodle: '#BACC5C', bake: '#A6AF00',
-    pattern: 'patterns/rtos.svg',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #CBD600 1.63%, #9BA300 65.28%)',
+    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #F1F5DE 118.15%)',
+    patternImg: 'patterns/rtos devroom pattern.png',
   },
 };
 
@@ -74,36 +79,6 @@ const DEBUG_OVERLAYS = {
   'Open Design Devroom': 'debug/open-design.png',
   'Cloud and Devops Devroom': 'debug/cloud-and-devops.png',
 };
-
-/* The shared torn-band shape; #FF4EC4 gets recoloured to each devroom's stroke. */
-const BAND_SRC = 'patterns/band.svg';
-const BAND_BASE_COLOR = '#FF4EC4';
-
-/*
- * The torn "edge-cut" region (from the reference design). The doodle field is
- * clipped to this shape so it has a clean jagged boundary against the white
- * card instead of bleeding edge-to-edge. Coordinates are in the 1080×1350 frame.
- */
-const DECOR_MASK_PATH =
-  'M547.501 610.945L1108 473.445V1355.45H-27.9993V912.445L168.501 879.945L159.501 1155.45L330.001 950.945L493.501 1146.95V950.945L739.001 1077.95L601.001 785.445L896.001 746.445L547.501 610.945Z';
-
-/* Strip the outer <svg> wrapper so inner content can be re-composed. */
-function innerSvg(text) {
-  return text.replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '');
-}
-
-/* Cache fetched SVG text so switching devrooms doesn't refetch. */
-const svgCache = {};
-async function loadSvg(url) {
-  if (svgCache[url] !== undefined) return svgCache[url];
-  try {
-    const res = await fetch(url);
-    svgCache[url] = await res.text();
-  } catch (e) {
-    svgCache[url] = '';
-  }
-  return svgCache[url];
-}
 
 function hexToRgba(hex, a) {
   const h = hex.replace('#', '');
@@ -205,7 +180,6 @@ createApp({
       isDownloading: false,
       downloadProgress: { current: 0, total: 0 },
       bulkSearch: '',
-      decorSvg: '',
       debug: false,
       debugOpacity: 0.5,
     };
@@ -224,12 +198,14 @@ createApp({
     pillBg() {
       return hexToRgba(this.activeDevroom.accent, 0.1);
     },
-    photoColor() {
-      const s = this.activeDevroom.stroke;
-      return `linear-gradient(150deg, ${hexToRgba(s, 0)} 42%, ${hexToRgba(s, 0.7)} 100%)`;
+    photoBgGradient() {
+      return this.activeDevroom.photoBackgroundGradient;
     },
-    descGradient() {
-      return `linear-gradient(180deg, #ffffff 0%, ${hexToRgba(this.activeDevroom.stroke, 0.06)} 100%)`;
+    descBgGradient() {
+      return this.activeDevroom.descriptionBackgroundGradient;
+    },
+    patternImgUrl() {
+      return this.activeDevroom.patternImg || null;
     },
     devroomNames() {
       return Object.keys(DEVROOMS);
@@ -350,11 +326,11 @@ createApp({
 
       await nextTick();
 
-      const canvas = await html2canvas(preview, {
+      const fn = format === 'jpeg' ? htmlToImage.toJpeg : htmlToImage.toPng;
+      const dataUrl = await fn(preview, {
         width: 1080,
         height: 1350,
-        scale: 1,
-        useCORS: true,
+        filter: (node) => !node.dataset?.htmlToImageIgnore,
       });
 
       wrapper.style.transform = origTransform || '';
@@ -363,7 +339,7 @@ createApp({
 
       const link = document.createElement('a');
       link.download = this.slugify(this.form.name || 'speaker-card') + '.' + format;
-      link.href = canvas.toDataURL('image/' + format);
+      link.href = dataUrl;
       link.click();
     },
 
@@ -389,6 +365,7 @@ createApp({
       wrapper.style.height = 'auto';
 
       const zip = new JSZip();
+      const fn = format === 'jpeg' ? htmlToImage.toJpeg : htmlToImage.toPng;
 
       for (let i = 0; i < this.speakers.length; i++) {
         const s = this.speakers[i];
@@ -405,14 +382,13 @@ createApp({
         await nextTick();
         await new Promise((r) => setTimeout(r, 80));
 
-        const canvas = await html2canvas(this.$refs.cardPreview, {
+        const dataUrl = await fn(this.$refs.cardPreview, {
           width: 1080,
           height: 1350,
-          scale: 1,
-          useCORS: true,
+          filter: (node) => !node.dataset?.htmlToImageIgnore,
         });
 
-        const blob = await new Promise((r) => canvas.toBlob(r, 'image/' + format));
+        const blob = await fetch(dataUrl).then((r) => r.blob());
         zip.file(this.slugify(s.name) + '.' + format, blob);
         this.downloadProgress.current = i + 1;
       }
@@ -447,22 +423,6 @@ createApp({
       return DEVROOMS[trackName] || DEVROOMS[DEFAULT_DEVROOM];
     },
 
-    /* ── Decorative layers, composed as one inline SVG ──
-       band (recoloured, behind) + doodle field clipped to the torn edge. */
-    async loadDecor() {
-      const d = this.activeDevroom;
-      const [bandRaw, doodleRaw] = await Promise.all([loadSvg(BAND_SRC), loadSvg(d.pattern)]);
-      const band = innerSvg(bandRaw).split(BAND_BASE_COLOR).join(d.stroke);
-      const doodles = innerSvg(doodleRaw).split(d.bake).join(d.doodle);
-      this.decorSvg =
-        '<svg width="1080" height="1350" viewBox="0 0 1080 1350" fill="none" ' +
-        'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">' +
-        '<defs><clipPath id="ifDecorClip"><path d="' + DECOR_MASK_PATH + '"/></clipPath></defs>' +
-        '<g transform="translate(0 441)">' + band + '</g>' +
-        '<g clip-path="url(#ifDecorClip)"><g transform="translate(0 473)">' + doodles + '</g></g>' +
-        '</svg>';
-    },
-
     getShareUrl(speaker) {
       const params = new URLSearchParams({
         name: speaker.name,
@@ -493,15 +453,8 @@ createApp({
     },
   },
 
-  watch: {
-    'form.track'() {
-      this.loadDecor();
-    },
-  },
-
   mounted() {
     this.parseQueryString();
-    this.loadDecor();
     this.$nextTick(() => lucide.createIcons());
   },
 

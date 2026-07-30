@@ -16,33 +16,24 @@
   font-family: 'Inter', sans-serif;
 }
 
-/* ── Decorative doodle layers (fetched SVGs, recoloured per devroom) ── */
-
-.card-decor {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-}
-
-.card-decor svg {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 1080px;
-  height: 1350px;
-}
-
 /* ── Foreground container ── */
 
 .card-fg {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 1;
   box-sizing: border-box;
   padding: 43px 114px 0;
   display: flex;
   flex-direction: column;
+  pointer-events: none;
+}
+
+.card-fg > * {
+  pointer-events: auto;
 }
 
 /* ── Header ── */
@@ -71,7 +62,7 @@
   margin: 0 0 4px;
   font-size: 18.23px;
   font-weight: 600;
-  color: #141414;
+  color: #1a1a1a;
   letter-spacing: -0.02em;
 }
 
@@ -84,30 +75,38 @@
 
 .card-pills {
   display: inline-flex;
-  gap: 6px;
+  align-items: center;
+  width: fit-content;
+  background: var(--pill-bg, transparent);
+  padding: 6px;
+  gap: 0;
   margin-top: 78px;
+  border-radius: 16px;
 }
 
 .card-pill {
-  display: inline-flex;
-  align-items: center;
-  font-size: 22px;
-  font-weight: 800;
+  display: inline-block;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  line-height: 1;
-  padding: 17px 24px;
+  letter-spacing: 0.08em;
+  /* line-height = font-size + top-pad + bottom-pad (10+10) = 44px
+     html-to-image centres text correctly when line-height == box height */
+  line-height: 44px;
   white-space: nowrap;
 }
 
 /* Segmented pill: 14px on the outer corners, 8px where the two meet */
 .card-pill-devroom {
+  background: transparent;
+  padding: 0 20px;
   border-radius: 14px 8px 8px 14px;
 }
 
 .card-pill-type {
   background-color: #ffffff;
-  border: 2px solid rgba(20, 20, 20, 0.12);
+  padding: 0 20px;
   border-radius: 8px 14px 14px 8px;
 }
 
@@ -116,11 +115,11 @@
 .card-title {
   position: relative;
   z-index: 2; /* keep the title above the photo card if a long title reaches it */
-  margin: 19px 0 0;
+  margin: 10px 0 0;
   font-size: 50px;
   font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: -0.02em;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
   color: #141414;
   max-width: 888px;
   word-break: break-word;
@@ -132,84 +131,155 @@
    coordinates (1080×1350 frame) so they pixel-match the reference. */
 .card-people {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  pointer-events: auto;
 }
 
+/*
+  html-to-image: never put overflow:hidden and transform on the same element.
+  .card-photo        = outer rotated wrapper (no overflow:hidden, no border-radius)
+  .card-photo-clip   = inner clip+radius container (no transform)
+*/
 .card-photo {
   position: absolute;
   left: 139px;
   top: 466px;
   width: 358px;
   height: 358px;
+  background: transparent;
+  transform: rotate(4deg);
+  transform-origin: center center;
+  will-change: transform;
+  pointer-events: auto;
+  /* NO overflow:hidden here — moved to .card-photo-clip */
+}
+
+.card-photo-clip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 358px;
+  height: 358px;
   border-radius: 24px;
   overflow: hidden;
-  transform: rotate(4deg);
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.18);
+  /* NO transform here — moved to .card-photo */
+}
+
+.card-photo-bg-rect {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 358px;
+  height: 278px;
+  border-radius: 24px;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .card-photo img {
   position: absolute;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center top;
+  z-index: 1;
 }
 
-/* Overlay 1 — devroom colour gradient (set inline) */
-.card-photo-color {
+.card-name-group {
   position: absolute;
-  inset: 0;
+  left: 165px;
+  top: 740px;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 7px;
+  pointer-events: auto;
 }
 
-/* Overlay 2 — light-black gradient for depth */
-.card-photo-vignette {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(205deg, transparent 48%, rgba(0, 0, 0, 0.32) 100%);
-}
-
+/*
+  Note: CSS filter:drop-shadow is unreliable in html-to-image.
+  Use a wrapper with box-shadow on a semi-transparent overlay instead.
+*/
 .card-cursor {
-  position: absolute;
-  left: 6px;
-  bottom: 2px;
-  width: 44px;
+  position: relative;
+  width: 44.88px;
+  height: 47.252px;
   z-index: 3;
-  filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.3));
+  /* drop-shadow replaced with layered approach below */
+  pointer-events: none;
+  flex-shrink: 0;
 }
 
-.card-cursor svg {
+/* Shadow layer behind the cursor via a positioned sibling in HTML */
+.card-cursor-shadow {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  width: 44.88px;
+  height: 47.252px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 3px;
+  filter: blur(5px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.card-cursor img {
   display: block;
+  width: 44.88px;
+  height: 47.252px;
+  position: relative;
+  z-index: 1;
+}
+
+.card-name-wrap {
+  display: flex;
   width: 100%;
-  height: auto;
+  padding-top: 25px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin-left: -9px;
 }
 
 .card-name {
-  position: absolute;
-  left: 200px;
-  top: 760px;
-  background-color: #ffffff;
-  border: 2px solid #1a1a1a;
-  border-radius: 18px;
-  padding: 20px 38px 22px 32px;
+  display: flex;
   transform: rotate(-4deg);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  transform-origin: center center;
+  will-change: transform;
+  padding: 13px 16px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  align-self: stretch;
+  border-radius: 20px;
+  border: 1px solid #000000;
+  background: #ffffff;
+  /* Simplified shadow — renders reliably across capture libraries */
+  box-shadow: 0 8px 38px 0 rgba(0, 0, 0, 0.12);
+  pointer-events: auto;
 }
 
 .card-name-title {
   font-size: 32px;
   font-weight: 600;
-  color: #1a1a1a;
-  letter-spacing: -0.01em;
+  color: #4B4B4B;
+  letter-spacing: -0.03em;
   line-height: 1.15;
+  margin-bottom: 6px;
 }
 
 .card-name-sub {
-  margin-top: 8px;
   font-size: 28px;
   font-weight: 400;
-  color: #6f6f6f;
-  letter-spacing: -0.01em;
+  color: #4b4b4b;
+  letter-spacing: -0.02em;
   line-height: 1.15;
 }
 
@@ -218,17 +288,49 @@
 .card-description {
   position: absolute;
   left: 114px;
-  top: 936px;
-  width: 851px;
+  right: 114px;
+  top: 957px;
+  display: block;
+  text-align: center;
+  padding: 30px;
   box-sizing: border-box;
-  border: 1.5px solid rgba(20, 20, 20, 0.12);
   border-radius: 20px;
-  padding: 32px 38px;
+  border: 1px solid #000;
+  /* explicit background-color fallback + gradient for reliable capture */
+  background-color: #ffffff;
+  background-image: linear-gradient(211deg, #ffffff 13.69%, #fff0fa 118.15%);
+
+  color: #4B4B4B;
   font-size: 26px;
+  font-style: normal;
   font-weight: 400;
-  line-height: 1.5;
-  letter-spacing: -0.01em;
-  color: #3a3a3a;
+  line-height: 150.3%;
+  letter-spacing: -0.52px;
+}
+
+.card-description-text {
+  margin: 0;
+  width: 100%;
+  text-align: left;
+  line-height: 150.3%;
+}
+
+/* ── Devroom pattern background strip (above footer) ── */
+
+.card-pattern-bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 74px; /* anchored just above the footer bar */
+  z-index: 0;
+  pointer-events: none;
+  line-height: 0; /* collapse inline whitespace gap */
+}
+
+.card-pattern-bg img {
+  width: 100%;
+  height: auto; /* preserve natural aspect ratio — no cropping */
+  display: block;
 }
 
 /* ── Footer (full-bleed bottom bar) ── */
@@ -238,8 +340,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: 92px;
-  padding: 0 96px;
+  padding: 17px 115px;
   z-index: 2;
   background-color: #f2f2f2;
   display: flex;
@@ -248,9 +349,9 @@
 }
 
 .card-footer-url {
-  font-size: 22px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   color: #1a1a1a;
 }
 
@@ -260,7 +361,7 @@
 }
 
 .card-footer-logo svg {
-  height: 44px;
+  height: 40px;
   width: auto;
 }
 
@@ -288,6 +389,12 @@
 
 .preview-wrapper .card-poster {
   outline: 3px dashed #999999;
+}
+
+/* Suppress preview-only styles during image capture */
+.card-poster.capturing,
+.card-poster.capturing * {
+  outline: none !important;
 }
 
 /* ── Form overrides ── */
@@ -334,7 +441,10 @@
 
 .download-overlay {
   position: fixed;
-  inset: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   z-index: 50;
   background: rgba(0, 0, 0, 0.7);
   display: flex;
@@ -359,12 +469,6 @@
 }
 
 @media (max-width: 640px) {
-  .preview-wrapper {
-    --preview-scale: calc((100vw - 32px) / 1080);
-  }
-}
-
-@media (max-width: 480px) {
   .preview-wrapper {
     --preview-scale: calc((100vw - 32px) / 1080);
   }
