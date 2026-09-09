@@ -145,25 +145,6 @@
             accept="image/*"
             @change="handleImage"
             class="form-input text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:uppercase file:bg-gray-200 file:text-gray-600 file:cursor-pointer">
-          <div v-if="imageDataUrl" class="flex items-center gap-2 mt-2">
-            <span class="text-xs font-medium text-gray-500">Fit mode:</span>
-            <div class="inline-flex rounded-md shadow-sm border border-gray-200 overflow-hidden text-xs">
-              <button
-                type="button"
-                @click="photoFit = 'contain'"
-                :class="photoFit === 'contain' ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'"
-                class="px-2.5 py-1 font-semibold transition-colors">
-                Fit inside (Contain)
-              </button>
-              <button
-                type="button"
-                @click="photoFit = 'cover'"
-                :class="photoFit === 'cover' ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'"
-                class="px-2.5 py-1 font-semibold transition-colors">
-                Fill square (Cover)
-              </button>
-            </div>
-          </div>
         </div>
 
         <!-- Devroom / Track colour preview -->

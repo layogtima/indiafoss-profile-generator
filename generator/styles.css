@@ -76,8 +76,7 @@
 
 /* ── Pills & Title ── */
 
-.card-title-wrap,
-.card-title-group {
+.card-title-wrap {
   position: relative;
   z-index: 2;
   margin-top: 50px;
@@ -169,7 +168,6 @@
   height: 278px;
   transform-origin: bottom center;
   border-radius: 32px;
-  background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #E05CB5 1.63%, #CD2797 65.28%);
   z-index: 1;
 }
 
@@ -222,7 +220,6 @@
   align-items: flex-start;
   gap: 20px;
   border-radius: 28.743px;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #E05CB5 11.26%, #CD2797 65.7%);
   box-sizing: border-box;
   flex-shrink: 0;
   min-width: 280px;
@@ -305,12 +302,6 @@
 
 .preview-wrapper .card-poster {
   outline: 3px dashed #999999;
-}
-
-/* Suppress preview-only styles during image capture */
-.card-poster.capturing,
-.card-poster.capturing * {
-  outline: none !important;
 }
 
 /* ── Form overrides ── */

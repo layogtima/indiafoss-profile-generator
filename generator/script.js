@@ -98,10 +98,13 @@ const MAIN_TRACK_COLORS = {
  * `Track` column and the ?track= query param — keep it stable.
  */
 const DEVROOMS = {
+  /* Main Track theming is resolved dynamically in the activeDevroom computed
+     property based on form.color. This entry only provides the dropdown key + label. */
   'Main Track': {
     label: 'Main Track',
-    stroke: MAIN_TRACK_COLORS.red.stroke, accent: MAIN_TRACK_COLORS.red.accent,
-    patternImg: MAIN_TRACK_COLORS.red.patternImg,
+    stroke: '#FF643E',   // red default — overridden by activeDevroom when selected
+    accent: '#FF643E',
+    patternImg: 'patterns/red.png',
     photoBackgroundGradient: MAIN_TRACK_COLORS.red.photoBackgroundGradient,
     infoBackgroundGradient: MAIN_TRACK_COLORS.red.infoBackgroundGradient,
   },
@@ -282,7 +285,6 @@ createApp({
         color: 'red',
       },
       imageDataUrl: null,
-      photoFit: 'contain',
       placeholderImage: PLACEHOLDER_IMAGE,
       speakers: [],
       isDownloading: false,
@@ -332,14 +334,14 @@ createApp({
           backgroundImage: `url('${this.imageDataUrl}')`,
           backgroundColor: 'transparent',
           backgroundPosition: 'center',
-          backgroundSize: this.photoFit || 'contain',
+          backgroundSize: 'contain',
           backgroundRepeat: 'no-repeat',
         };
       }
       return {};
     },
     infoBgGradient() {
-      return this.activeDevroom.infoBackgroundGradient || this.activeDevroom.photoBackgroundGradient;
+      return this.activeDevroom.infoBackgroundGradient;
     },
     patternImgUrl() {
       return this.activeDevroom.patternImg || null;
@@ -417,6 +419,7 @@ createApp({
       }
 
       const designation = get('designation');
+      if (designation) this.form.designation = designation;
     },
 
     /* ── Image handling ── */
