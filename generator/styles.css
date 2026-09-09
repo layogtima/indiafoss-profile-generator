@@ -1,18 +1,21 @@
 /* ──────────────────────────────────────────────────────
    IndiaFOSS 2026 — Speaker Poster Generator
-   Card poster styles (pixel-perfect for 1080 × 1350 output)
+   Card poster styles (pixel-perfect for 1080 × 1080 output)
    UI chrome uses Tailwind; these are poster-only + overrides.
    ────────────────────────────────────────────────────── */
 
-/* ── Card poster (the 1080×1350 downloadable image) ── */
+/* ── Card poster (the 1080×1080 downloadable image) ── */
 
 .card-poster {
   width: 1080px;
-  height: 1350px;
+  height: 1080px;
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
-  background-color: #ffffff;
+  background-color: #fafafa;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   font-family: 'Inter', sans-serif;
 }
 
@@ -71,7 +74,18 @@
   font-weight: 700;
 }
 
-/* ── Pills ── */
+/* ── Pills & Title ── */
+
+.card-title-wrap,
+.card-title-group {
+  position: relative;
+  z-index: 2;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 25px;
+}
 
 .card-pills {
   display: inline-flex;
@@ -80,7 +94,6 @@
   background: var(--pill-bg, transparent);
   padding: 6px;
   gap: 0;
-  margin-top: 78px;
   border-radius: 16px;
 }
 
@@ -105,7 +118,7 @@
 }
 
 .card-pill-type {
-  background-color: #ffffff;
+  background-color: #fafafa;
   padding: 0 20px;
   border-radius: 8px 14px 14px 8px;
 }
@@ -115,222 +128,123 @@
 .card-title {
   position: relative;
   z-index: 2; /* keep the title above the photo card if a long title reaches it */
-  margin: 10px 0 0;
+  margin: 0;
   font-size: 50px;
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.04em;
-  color: #141414;
+  color: #1a1a1a;
   max-width: 888px;
   word-break: break-word;
 }
 
-/* ── Speaker photo + name card ── */
+/* ── Speaker card (photo + info) ── */
 
-/* People + description are absolutely positioned to the design's exact
-   coordinates (1080×1350 frame) so they pixel-match the reference. */
-.card-people {
+.speaker-card {
   position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  pointer-events: auto;
-}
-
-/*
-  html-to-image: never put overflow:hidden and transform on the same element.
-  .card-photo        = outer rotated wrapper (no overflow:hidden, no border-radius)
-  .card-photo-clip   = inner clip+radius container (no transform)
-*/
-.card-photo {
-  position: absolute;
-  left: 139px;
-  top: 466px;
-  width: 358px;
-  height: 358px;
-  background: transparent;
-  transform: rotate(4deg);
-  transform-origin: center center;
-  will-change: transform;
-  pointer-events: auto;
-  /* NO overflow:hidden here — moved to .card-photo-clip */
-}
-
-.card-photo-clip {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 358px;
-  height: 358px;
-  border-radius: 24px;
-  overflow: hidden;
-  /* NO transform here — moved to .card-photo */
-}
-
-.card-photo-bg-rect {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 358px;
-  height: 278px;
-  border-radius: 24px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.card-photo img {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
-  z-index: 1;
-}
-
-.card-name-group {
-  position: absolute;
-  left: 165px;
-  top: 740px;
+  bottom: 205px; /* 131px above the 74px card-footer */
+  left: 50%;
+  transform: translateX(-50%);
   display: inline-flex;
-  align-items: flex-start;
-  gap: 7px;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 42px;
+  z-index: 2;
   pointer-events: auto;
 }
 
-/*
-  Note: CSS filter:drop-shadow is unreliable in html-to-image.
-  Use a wrapper with box-shadow on a semi-transparent overlay instead.
-*/
-.card-cursor {
+.speaker-photo-wrap {
   position: relative;
-  width: 44.88px;
-  height: 47.252px;
-  z-index: 3;
-  /* drop-shadow replaced with layered approach below */
-  pointer-events: none;
+  width: 358px;
+  height: 358px;
+  transform: rotate(-3.75deg);
   flex-shrink: 0;
 }
 
-/* Shadow layer behind the cursor via a positioned sibling in HTML */
-.card-cursor-shadow {
+.inside {
   position: absolute;
-  top: 4px;
+  bottom: 0;
   left: 0;
-  width: 44.88px;
-  height: 47.252px;
-  background: rgba(0, 0, 0, 0.25);
-  border-radius: 3px;
-  filter: blur(5px);
-  z-index: -1;
-  pointer-events: none;
-}
-
-.card-cursor img {
-  display: block;
-  width: 44.88px;
-  height: 47.252px;
-  position: relative;
+  width: 358px;
+  height: 278px;
+  transform-origin: bottom center;
+  border-radius: 32px;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #E05CB5 1.63%, #CD2797 65.28%);
   z-index: 1;
 }
 
-.card-name-wrap {
-  display: flex;
-  width: 100%;
-  padding-top: 25px;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  margin-left: -9px;
+.speaker-photo {
+  position: relative;
+  width: 358px;
+  height: 358px;
+  transform-origin: bottom center;
+  border-radius: 24px;
+  background-color: lightgray;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  z-index: 2;
 }
 
-.card-name {
-  display: flex;
-  transform: rotate(-4deg);
-  transform-origin: center center;
-  will-change: transform;
-  padding: 13px 16px;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-  align-self: stretch;
-  border-radius: 20px;
-  border: 1px solid #000000;
-  background: #ffffff;
-  /* Simplified shadow — renders reliably across capture libraries */
-  box-shadow: 0 8px 38px 0 rgba(0, 0, 0, 0.12);
-  pointer-events: auto;
+.front-shadow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 358px;
+  height: 104px;
+  border-radius: 0 0 24px 24px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 0%, rgba(0, 0, 0, 0.70) 100%);
+  z-index: 3;
+  pointer-events: none;
 }
 
-.card-name-title {
-  font-size: 32px;
+.speaker-photo-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.speaker-info {
+  display: flex;
+  height: 185.114px;
+  transform: rotate(3.75deg);
+  padding: 35px 25px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  border-radius: 28.743px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #E05CB5 11.26%, #CD2797 65.7%);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  min-width: 280px;
+  max-width: 480px;
+}
+
+.speaker-name {
+  font-size: 43px;
   font-weight: 600;
-  color: #4B4B4B;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-  margin-bottom: 6px;
-}
-
-.card-name-sub {
-  font-size: 28px;
-  font-weight: 400;
-  color: #4b4b4b;
+  color: #fafafa;
   letter-spacing: -0.02em;
   line-height: 1.15;
+  word-break: break-word;
 }
 
-/* ── Description ── */
-
-.card-description {
-  position: absolute;
-  left: 114px;
-  right: 114px;
-  top: 957px;
-  display: block;
-  text-align: center;
-  padding: 30px;
-  box-sizing: border-box;
-  border-radius: 20px;
-  border: 1px solid #000;
-  /* explicit background-color fallback + gradient for reliable capture */
-  background-color: #ffffff;
-  background-image: linear-gradient(211deg, #ffffff 13.69%, #fff0fa 118.15%);
-
-  color: #4B4B4B;
-  font-size: 26px;
-  font-style: normal;
+.speaker-designation {
+  font-size: 32px;
   font-weight: 400;
-  line-height: 150.3%;
-  letter-spacing: -0.52px;
-}
-
-.card-description-text {
-  margin: 0;
-  width: 100%;
-  text-align: left;
-  line-height: 150.3%;
-}
-
-/* ── Devroom pattern background strip (above footer) ── */
-
-.card-pattern-bg {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 74px; /* anchored just above the footer bar */
-  z-index: 0;
-  pointer-events: none;
-  line-height: 0; /* collapse inline whitespace gap */
-}
-
-.card-pattern-bg img {
-  width: 100%;
-  height: auto; /* preserve natural aspect ratio — no cropping */
-  display: block;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  word-break: break-word;
 }
 
 /* ── Footer (full-bleed bottom bar) ── */
@@ -340,9 +254,11 @@
   left: 0;
   right: 0;
   bottom: 0;
+  height: 74px;
+  box-sizing: border-box;
   padding: 17px 115px;
   z-index: 2;
-  background-color: #f2f2f2;
+  background-color: #fafafa;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -350,7 +266,7 @@
 
 .card-footer-url {
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 500;
   letter-spacing: 0.08em;
   color: #1a1a1a;
 }
@@ -371,7 +287,7 @@
   position: absolute;
   inset: 4px 0 0 3px;
   width: 1080px;
-  height: 1350px;
+  height: 1080px;
   object-fit: fill;
   pointer-events: none;
   z-index: 99;
@@ -383,7 +299,7 @@
   transform: scale(var(--preview-scale, 0.4));
   transform-origin: top left;
   width: calc(1080px * var(--preview-scale, 0.4));
-  height: calc(1350px * var(--preview-scale, 0.4));
+  height: calc(1080px * var(--preview-scale, 0.4));
   flex-shrink: 0;
 }
 
@@ -414,13 +330,13 @@
 }
 
 .form-input:focus {
-  background-color: #ffffff;
+  background-color: #fafafa;
   border-color: #666666;
   color: #4b4b4b;
 }
 
 .form-input:hover {
-  background-color: #ffffff;
+  background-color: #fafafa;
   border-color: #666666;
   box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.08);
   color: #4b4b4b;

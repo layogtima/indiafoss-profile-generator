@@ -1,0 +1,25 @@
+in the speaker card, keep the
+
+  opendesign devroom's inside div as background color as radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #E05CB5 1.63%,
+  #CD2797 65.28%); and keep the speaker-info color as background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #E05CB5 11.26%,
+  #CD2797 65.7%);
+
+
+  for cloud-&-devops keep the inside div's background color as background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%),
+  linear-gradient(166deg, #A3B8FF 1.63%, #4C76FF 65.28%); and keep the speaker-info color as background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%),
+  linear-gradient(166deg, #A3B8FF 11.26%, #4C76FF 65.7%);
+
+  for aosp-devroom keep the inside div's background color as background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #61D963 1.63%, #009A03 65.28%); and keep the speaker-info color as background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #61D963 15.45%, #009A03 72.4%);
+
+  for security-devroom keep the inside div's background color as background: var(--jjih, radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #07EEE6 1.63%, #03B4AB 65.28%)); and keep the speaker-info color as background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #07E4DC 11.26%, #03ABA2 65.7%);
+
+  for compiler-devroom keep the inside div's background color as background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #EA8E85 1.63%, #DF5548 65.28%); and keep the speaker-info color as background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #E46E63 11.26%, #DF5548 65.7%);
+
+  for documentation-devroom keep the inside div's background color as background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #BB7EF1 1.63%, #9739EA 65.28%); and keep the speaker-info color as background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #BB7EF1 11.26%, #9739EA 65.7%);
+
+  for open-hardware-devroom keep the inside div's background color as background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #C2CC00 1.63%, #A6AF00 65.28%); and keep the speaker-info color as background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #C2CC00 11.26%, #A6AF00 65.7%);
+
+
+
+
+

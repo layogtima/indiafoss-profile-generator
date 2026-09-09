@@ -87,11 +87,6 @@
         </div>
 
         <div>
-          <label class="block mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Talk Description</label>
-          <textarea v-model="form.description" rows="3" class="form-input" placeholder="Short description of the talk..."></textarea>
-        </div>
-
-        <div>
           <label class="block mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Speaker's Name</label>
           <input v-model="form.name" type="text" class="form-input" placeholder="Full name">
         </div>
@@ -102,8 +97,41 @@
         </div>
 
         <div>
-          <label class="block mb-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400">Profile Picture (square transparent PNG)</label>
-          <input type="file" accept="image/*" @change="handleImage" class="form-input text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:uppercase file:bg-gray-200 file:text-gray-600 file:cursor-pointer">
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="text-xs font-semibold uppercase tracking-wider text-gray-400">Profile Picture (square transparent PNG)</label>
+            <button
+              v-if="imageDataUrl"
+              type="button"
+              @click="removeImage"
+              class="text-xs text-red-500 hover:text-red-700 font-medium transition-colors">
+              Remove
+            </button>
+          </div>
+          <input
+            ref="imageInput"
+            type="file"
+            accept="image/*"
+            @change="handleImage"
+            class="form-input text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded file:border-0 file:text-xs file:font-semibold file:uppercase file:bg-gray-200 file:text-gray-600 file:cursor-pointer">
+          <div v-if="imageDataUrl" class="flex items-center gap-2 mt-2">
+            <span class="text-xs font-medium text-gray-500">Fit mode:</span>
+            <div class="inline-flex rounded-md shadow-sm border border-gray-200 overflow-hidden text-xs">
+              <button
+                type="button"
+                @click="photoFit = 'contain'"
+                :class="photoFit === 'contain' ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'"
+                class="px-2.5 py-1 font-semibold transition-colors">
+                Fit inside (Contain)
+              </button>
+              <button
+                type="button"
+                @click="photoFit = 'cover'"
+                :class="photoFit === 'cover' ? 'bg-gray-900 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'"
+                class="px-2.5 py-1 font-semibold transition-colors">
+                Fill square (Cover)
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Devroom colour preview -->
@@ -126,7 +154,10 @@
 
       <!-- Card preview -->
       <div class="preview-wrapper" ref="previewWrapper">
-        <div ref="cardPreview" class="card-poster">
+        <div
+          ref="cardPreview"
+          class="card-poster"
+          :style="{ backgroundImage: patternImgUrl ? `url('${patternImgUrl}')` : '' }">
 
           <!-- Foreground -->
           <div class="card-fg">
@@ -157,55 +188,43 @@
             </div>
           </div>
 
-          <!-- Pills -->
-          <div class="card-pills" :style="{ '--pill-bg': pillBg }">
-            <span class="card-pill card-pill-devroom" :style="{ color: accentColor }">
-              {{ activeDevroom.label }}
-            </span>
-            <span class="card-pill card-pill-type" :style="{ color: accentColor }">
-              {{ form.category || 'Talk' }}
-            </span>
+          <!-- Pills & Title wrapper -->
+          <div class="card-title-wrap">
+            <!-- Pills -->
+            <div class="card-pills" :style="{ '--pill-bg': pillBg }">
+              <span class="card-pill card-pill-devroom" :style="{ color: accentColor }">
+                {{ activeDevroom.label }}
+              </span>
+              <span class="card-pill card-pill-type" :style="{ color: accentColor }">
+                {{ form.category || 'Talk' }}
+              </span>
+            </div>
+
+            <!-- Title -->
+            <h1 class="card-title">{{ form.title || 'Talk title goes here...' }}</h1>
           </div>
 
-          <!-- Title -->
-          <h1 class="card-title">{{ form.title || 'Talk title goes here...' }}</h1>
-
-          <!-- Speaker photo + name card -->
-          <div class="card-people">
-            <div class="card-photo">
-              <div class="card-photo-clip">
-                <div class="card-photo-bg-rect" :style="{ background: photoBgGradient }"></div>
-                <img :src="imageDataUrl || placeholderImage" alt="Speaker">
+          <!-- Speaker card -->
+          <div class="speaker-card">
+            <div class="speaker-photo-wrap">
+              <div class="inside" :style="{ background: photoBgGradient }"></div>
+              <div class="speaker-photo" :style="photoStyle">
+                <img
+                  v-if="!imageDataUrl && placeholderImage"
+                  :src="placeholderImage"
+                  class="speaker-photo-placeholder"
+                  alt="Speaker placeholder">
+                <div class="front-shadow"></div>
               </div>
             </div>
-            <div class="card-name-group">
-              <div class="card-cursor">
-                <div class="card-cursor-shadow" aria-hidden="true" data-html-to-image-ignore="true"></div>
-                <img src="cursor.svg" alt="Cursor" style="width: 44.88px; height: 47.252px;">
-              </div>
-              <div class="card-name-wrap">
-                <div class="card-name">
-                  <div class="card-name-title">{{ form.name || 'Name of the Speaker' }}</div>
-                  <div class="card-name-sub">{{ form.designation || 'Designation of Speaker' }}</div>
-                </div>
-              </div>
+            <div class="speaker-info" :style="{ background: infoBgGradient }">
+              <div class="speaker-name">{{ form.name || 'Name of the Speaker' }}</div>
+              <div class="speaker-designation" v-if="form.designation || !form.name">{{ form.designation || 'Designation of the Speaker' }}</div>
             </div>
-          </div>
-
-          <!-- Description -->
-          <div class="card-description" :style="{ backgroundImage: descBgGradient }">
-            <p class="card-description-text">
-              {{ form.description || 'Talk description goes here, a short abstract of what the session covers.' }}
-            </p>
           </div>
 
           </div>
           <!-- /Foreground -->
-
-          <!-- Devroom pattern background (above footer) -->
-          <div class="card-pattern-bg" v-if="patternImgUrl">
-            <img :src="patternImgUrl" alt="" aria-hidden="true">
-          </div>
 
           <!-- Footer -->
           <div class="card-footer">
@@ -363,7 +382,7 @@
     <div v-if="!speakers.length" class="text-center py-20 text-gray-400">
       <i data-lucide="file-spreadsheet" class="w-10 h-10 mx-auto mb-4 text-gray-300"></i>
       <p class="text-lg font-medium mb-1 text-gray-500">No speakers loaded</p>
-      <p class="text-sm mb-5">Upload a CSV file to get started. Expected columns: Session Type, Track, Full Name, Title, Post desc.</p>
+      <p class="text-sm mb-5">Upload a CSV file to get started. Expected columns: Session Type, Track, Full Name, Title.</p>
       <div class="flex items-center justify-center gap-3">
         <button
           @click="loadSampleCSV"

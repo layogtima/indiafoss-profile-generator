@@ -6,9 +6,8 @@
 /*
  * Per-devroom theming.
  *  - `label`      — text shown in the dropdown + the devroom pill
- *  - `stroke`     — photo-card border colour
+ *  - `stroke`     — devroom stroke colour
  *  - `accent`     — pill text colour (a readable, deeper shade of stroke)
- *  - `patternImg` — the PNG background pattern image (from generator/patterns/)
  *
  * The key (e.g. 'AOSP Devroom') is the canonical value matched against the CSV
  * `Track` column and the ?track= query param — keep it stable.
@@ -16,59 +15,59 @@
 const DEVROOMS = {
   'Open Design Devroom': {
     label: 'Open Design Devroom',
-    stroke: '#FF4EC4', accent: '#E337AA',
-    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 99.52%), linear-gradient(166deg, #EDA1D4 1.63%, #E337AA 65.28%)',
-    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #FFF0FA 118.15%)',
-    patternImg: 'patterns/open-design-devroom pattern.png',
+    stroke: '#D93AA4', accent: '#D93AA4',
+    patternImg: 'patterns/open-design-devroom-pattern.png',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #E05CB5 1.63%, #CD2797 65.28%)',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #E05CB5 11.26%, #CD2797 65.7%)',
   },
   'Cloud and Devops Devroom': {
     label: 'Cloud & Devops Devroom',
-    stroke: '#85A1FF', accent: '#5D7DF0',
+    stroke: '#4D76FF', accent: '#4D76FF',
+    patternImg: 'patterns/cloud-&-devops-devroom-pattern.png',
     photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #A3B8FF 1.63%, #4C76FF 65.28%)',
-    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #F3F4F7 118.15%)',
-    patternImg: 'patterns/cloud & devops devroom pattern.png',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #A3B8FF 11.26%, #4C76FF 65.7%)',
   },
   'Compiler Devroom': {
     label: 'Compiler Devroom',
-    stroke: '#E77D74', accent: '#D35849',
-    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #EEA5A0 1.63%, #DF5447 65.28%)',
-    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #FCEFEE 118.15%)',
-    patternImg: 'patterns/compilers devroom pattern.png',
+    stroke: '#D35849', accent: '#D35849',
+    patternImg: 'patterns/compilers-devroom-pattern.png',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #EA8E85 1.63%, #DF5548 65.28%)',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #E46E63 11.26%, #DF5548 65.7%)',
   },
   'AOSP Devroom': {
     label: 'AOSP Devroom',
-    stroke: '#00C603', accent: '#0A9E0C',
-    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #C2FFC2 1.63%, #00B203 65.28%)',
-    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #EAFFEA 118.15%)',
-    patternImg: 'patterns/aosp devroom pattern.png',
+    stroke: '#00B203', accent: '#00B203',
+    patternImg: 'patterns/aosp-devroom-pattern.png',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #61D963 1.63%, #009A03 65.28%)',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #61D963 15.45%, #009A03 72.4%)',
   },
   'Documentation Devroom': {
     label: 'Documentation Devroom',
-    stroke: '#A14CEC', accent: '#8B36D6',
-    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #C798FF 1.63%, #9C42EB 65.28%)',
-    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #F9F4FE 118.15%)',
-    patternImg: 'patterns/documention devroom pattern.png',
+    stroke: '#9739EA', accent: '#9739EA',
+    patternImg: 'patterns/documention-devroom-pattern.png',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #BB7EF1 1.63%, #9739EA 65.28%)',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #BB7EF1 11.26%, #9739EA 65.7%)',
   },
   'Open Hardware Devroom': {
     label: 'Open Hardware Devroom',
-    stroke: '#FABA75', accent: '#E08A2E',
-    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #F9C58A 1.63%, #D56F01 65.28%)',
-    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #FFF0E1 118.15%)',
-    patternImg: 'patterns/open hardware devroom pattern.png',
+    stroke: '#E37601', accent: '#E37601',
+    patternImg: 'patterns/open-hardware-devroom-pattern.png',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #FEBA71 1.63%, #E37601 65.28%)',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #FEA648 11.26%, #E37601 65.7%)',
   },
   'Security Devroom': {
     label: 'Security Devroom',
-    stroke: '#04C7BD', accent: '#039B93',
+    stroke: '#03B4AB', accent: '#03B4AB',
+    patternImg: 'patterns/security-devroom-pattern.png',
     photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #07EEE6 1.63%, #03B4AB 65.28%)',
-    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #E7FFFD 118.15%)',
-    patternImg: 'patterns/security devroom pattern.png',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #07E4DC 11.26%, #03ABA2 65.7%)',
   },
   'RTOS Devroom': {
     label: 'RTOS Devroom',
-    stroke: '#A6AF00', accent: '#818800',
+    stroke: '#A6AF00', accent: '#A6AF00',
+    patternImg: 'patterns/rtos-devroom-pattern.png',
     photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #CBD600 1.63%, #9BA300 65.28%)',
-    descriptionBackgroundGradient: 'linear-gradient(211deg, #FFF 13.69%, #F1F5DE 118.15%)',
-    patternImg: 'patterns/rtos devroom pattern.png',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(166deg, #CBD600 11.26%, #9BA300 65.7%)',
   },
 };
 
@@ -150,7 +149,6 @@ function parseCSV(text) {
       title: row['Title'] || '',
       category: row['Session Type'] || 'Talk',
       track,
-      description: row['Post desc'] || '',
       designation: '',
       imageDataUrl: null,
     });
@@ -169,12 +167,12 @@ createApp({
       form: {
         category: 'Talk',
         title: '',
-        description: '',
         name: '',
         designation: '',
         track: DEFAULT_DEVROOM,
       },
       imageDataUrl: null,
+      photoFit: 'contain',
       placeholderImage: PLACEHOLDER_IMAGE,
       speakers: [],
       isDownloading: false,
@@ -201,8 +199,20 @@ createApp({
     photoBgGradient() {
       return this.activeDevroom.photoBackgroundGradient;
     },
-    descBgGradient() {
-      return this.activeDevroom.descriptionBackgroundGradient;
+    photoStyle() {
+      if (this.imageDataUrl) {
+        return {
+          backgroundImage: `url('${this.imageDataUrl}')`,
+          backgroundColor: 'transparent',
+          backgroundPosition: 'center',
+          backgroundSize: this.photoFit || 'contain',
+          backgroundRepeat: 'no-repeat',
+        };
+      }
+      return {};
+    },
+    infoBgGradient() {
+      return this.activeDevroom.infoBackgroundGradient || this.activeDevroom.photoBackgroundGradient;
     },
     patternImgUrl() {
       return this.activeDevroom.patternImg || null;
@@ -251,9 +261,6 @@ createApp({
       const title = get('title', 'Title');
       if (title) this.form.title = title;
 
-      const desc = get('desc', 'description', 'Post desc');
-      if (desc) this.form.description = desc;
-
       const type = get('type', 'category', 'Session Type');
       if (type) this.form.category = type;
 
@@ -282,6 +289,13 @@ createApp({
       const reader = new FileReader();
       reader.onload = (e) => (this.imageDataUrl = e.target.result);
       reader.readAsDataURL(file);
+    },
+
+    removeImage() {
+      this.imageDataUrl = null;
+      if (this.$refs.imageInput) {
+        this.$refs.imageInput.value = '';
+      }
     },
 
     handleBulkImage(event, speaker) {
@@ -329,7 +343,7 @@ createApp({
       const fn = format === 'jpeg' ? htmlToImage.toJpeg : htmlToImage.toPng;
       const dataUrl = await fn(preview, {
         width: 1080,
-        height: 1350,
+        height: 1080,
         filter: (node) => !node.dataset?.htmlToImageIgnore,
       });
 
@@ -374,7 +388,6 @@ createApp({
           title: s.title,
           category: s.category,
           track: s.track,
-          description: s.description,
           designation: s.designation || '',
         });
         this.imageDataUrl = s.imageDataUrl || null;
@@ -384,7 +397,7 @@ createApp({
 
         const dataUrl = await fn(this.$refs.cardPreview, {
           width: 1080,
-          height: 1350,
+          height: 1080,
           filter: (node) => !node.dataset?.htmlToImageIgnore,
         });
 
@@ -429,7 +442,6 @@ createApp({
         title: speaker.title,
         type: speaker.category,
         track: speaker.track,
-        desc: speaker.description,
       });
       return window.location.origin + window.location.pathname + '?' + params.toString();
     },
@@ -444,7 +456,6 @@ createApp({
         title: speaker.title,
         category: speaker.category,
         track: speaker.track,
-        description: speaker.description,
         designation: speaker.designation || '',
       });
       this.imageDataUrl = speaker.imageDataUrl || null;
@@ -456,6 +467,12 @@ createApp({
   mounted() {
     this.parseQueryString();
     this.$nextTick(() => lucide.createIcons());
+    Object.values(DEVROOMS).forEach((d) => {
+      if (d.patternImg) {
+        const img = new Image();
+        img.src = d.patternImg;
+      }
+    });
   },
 
   updated() {
