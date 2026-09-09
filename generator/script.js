@@ -4,6 +4,91 @@
  */
 
 /*
+ * Main Track color variants.
+ * Each color variant defines:
+ *  - `name`: display name
+ *  - `accent`: pill text & accent color
+ *  - `stroke`: preview bar & stroke color
+ *  - `patternImg`: background pattern PNG in generator/patterns/
+ *  - `photoBackgroundGradient`: background for speaker-photo .inside div
+ *  - `infoBackgroundGradient`: background for .speaker-info card
+ */
+const MAIN_TRACK_COLORS = {
+  red: {
+    name: 'Red',
+    accent: '#FF643E',
+    stroke: '#FF643E',
+    patternImg: 'patterns/red.png',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #FF7C5C 1.63%, #FF5B33 65.28%)',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(186deg, #FF6C47 -3.13%, #FF4B1F 73%)',
+  },
+  yellow: {
+    name: 'Yellow',
+    accent: '#F5AB00',
+    stroke: '#F5AB00',
+    patternImg: 'patterns/yellow.png',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #FFB50A 1.63%, #D69500 65.28%)',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(178deg, #F5AB00 -15.57%, #C28700 67.96%)',
+  },
+  pink: {
+    name: 'Pink',
+    accent: '#E45CFF',
+    stroke: '#E45CFF',
+    patternImg: 'patterns/pink.png',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #EB85FF 1.63%, #E147FF 65.28%)',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(186deg, #E770FF -3.13%, #E147FF 73%)',
+  },
+  violet: {
+    name: 'Violet',
+    accent: '#8A5CFF',
+    stroke: '#8A5CFF',
+    patternImg: 'patterns/violet.png',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #AE8FFF 1.63%, #8352FF 65.28%)',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(186deg, #AE8FFF -3.13%, #8352FF 73%)',
+  },
+  lime: {
+    name: 'Lime',
+    accent: '#9BC71A',
+    stroke: '#9BC71A',
+    patternImg: 'patterns/lime.png',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #9BC61A 1.63%, #779914 65.28%)',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(186deg, #94BD19 -3.13%, #779914 73%)',
+  },
+  green: {
+    name: 'Green',
+    accent: '#00D668',
+    stroke: '#00D668',
+    patternImg: 'patterns/green.png',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #61D963 1.63%, #00AD54 65.28%)',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(186deg, #00D668 -3.13%, #00AD54 73%)',
+  },
+  mint: {
+    name: 'Mint',
+    accent: '#00C2AE',
+    stroke: '#00C2AE',
+    patternImg: 'patterns/mint.png',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #00E0CA 1.63%, #00B8A6 65.28%)',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(186deg, #00CCB8 -3.13%, #00B8A6 79.09%)',
+  },
+  blue: {
+    name: 'Blue',
+    accent: '#4BA2FF',
+    stroke: '#4BA2FF',
+    patternImg: 'patterns/blue.png',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #7ABBFF 1.63%, #3D9BFF 65.28%)',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(186deg, #5CABFF -3.13%, #2990FF 73%)',
+  },
+  ruby: {
+    name: 'Ruby',
+    accent: '#FF3C74',
+    stroke: '#FF3C74',
+    patternImg: 'patterns/ruby.png',
+    photoBackgroundGradient: 'radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.20) 48%, rgba(0, 0, 0, 0.00) 100%), linear-gradient(166deg, #FF7AA0 1.63%, #FF3C74 65.28%)',
+    infoBackgroundGradient: 'linear-gradient(180deg, rgba(0, 0, 0, 0.00) 48%, rgba(0, 0, 0, 0.20) 100%), linear-gradient(186deg, #FF6692 -3.13%, #FF3D75 73%)',
+  },
+};
+
+/*
  * Per-devroom theming.
  *  - `label`      — text shown in the dropdown + the devroom pill
  *  - `stroke`     — devroom stroke colour
@@ -13,6 +98,13 @@
  * `Track` column and the ?track= query param — keep it stable.
  */
 const DEVROOMS = {
+  'Main Track': {
+    label: 'Main Track',
+    stroke: MAIN_TRACK_COLORS.red.stroke, accent: MAIN_TRACK_COLORS.red.accent,
+    patternImg: MAIN_TRACK_COLORS.red.patternImg,
+    photoBackgroundGradient: MAIN_TRACK_COLORS.red.photoBackgroundGradient,
+    infoBackgroundGradient: MAIN_TRACK_COLORS.red.infoBackgroundGradient,
+  },
   'Open Design Devroom': {
     label: 'Open Design Devroom',
     stroke: '#D93AA4', accent: '#D93AA4',
@@ -71,7 +163,7 @@ const DEVROOMS = {
   },
 };
 
-const DEFAULT_DEVROOM = 'Open Design Devroom';
+const DEFAULT_DEVROOM = 'Main Track';
 
 /* Reference mockups for the ?debug pixel-compare overlay (only these two exist). */
 const DEBUG_OVERLAYS = {
@@ -102,8 +194,8 @@ const PLACEHOLDER_IMAGE =
   encodeURIComponent(
     '<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">' +
       '<rect width="64" height="64" fill="#eaeaea"/>' +
-      '<path d="M21.3053 11.0879H42.6905V32.473H21.3053V11.0879Z" fill="#fafafa"/>' +
-      '<path d="M11.7383 36.9752H52.2575V54.9837H11.7383V36.9752Z" fill="#fafafa"/>' +
+      '<path d="M21.3053 11.0879H42.6905V32.473H21.3053V11.0879Z" fill="#ffffff"/>' +
+      '<path d="M11.7383 36.9752H52.2575V54.9837H11.7383V36.9752Z" fill="#ffffff"/>' +
       '</svg>',
   );
 
@@ -142,14 +234,31 @@ function parseCSV(text) {
     if (!name) return acc;
 
     const rawTrack = row['Track'] || DEFAULT_DEVROOM;
-    const track = DEVROOMS[rawTrack] ? rawTrack : DEFAULT_DEVROOM;
+    let track = DEFAULT_DEVROOM;
+    let color = (row['Color'] || row['Colour'] || 'red').toLowerCase();
+
+    const lowerRawTrack = rawTrack.toLowerCase();
+    if (lowerRawTrack.includes('main')) {
+      track = 'Main Track';
+      for (const colorKey of Object.keys(MAIN_TRACK_COLORS)) {
+        if (lowerRawTrack.includes(colorKey)) {
+          color = colorKey;
+          break;
+        }
+      }
+    } else if (DEVROOMS[rawTrack]) {
+      track = rawTrack;
+    } else {
+      track = DEFAULT_DEVROOM;
+    }
 
     acc.push({
       name,
       title: row['Title'] || '',
       category: row['Session Type'] || 'Talk',
       track,
-      designation: '',
+      color: MAIN_TRACK_COLORS[color] ? color : 'red',
+      designation: row['Designation'] || '',
       imageDataUrl: null,
     });
     return acc;
@@ -170,6 +279,7 @@ createApp({
         name: '',
         designation: '',
         track: DEFAULT_DEVROOM,
+        color: 'red',
       },
       imageDataUrl: null,
       photoFit: 'contain',
@@ -184,7 +294,24 @@ createApp({
   },
 
   computed: {
+    activeMainTrackColor() {
+      return MAIN_TRACK_COLORS[this.form.color] || MAIN_TRACK_COLORS.red;
+    },
+    mainTrackColors() {
+      return MAIN_TRACK_COLORS;
+    },
     activeDevroom() {
+      if (this.form.track === 'Main Track') {
+        const c = this.activeMainTrackColor;
+        return {
+          label: 'Main Track',
+          stroke: c.stroke,
+          accent: c.accent,
+          patternImg: c.patternImg,
+          photoBackgroundGradient: c.photoBackgroundGradient,
+          infoBackgroundGradient: c.infoBackgroundGradient,
+        };
+      }
       return DEVROOMS[this.form.track] || DEVROOMS[DEFAULT_DEVROOM];
     },
     strokeColor() {
@@ -233,7 +360,8 @@ createApp({
         (s) =>
           s.name.toLowerCase().includes(q) ||
           s.title.toLowerCase().includes(q) ||
-          s.track.toLowerCase().includes(q),
+          s.track.toLowerCase().includes(q) ||
+          (s.color && s.color.toLowerCase().includes(q)),
       );
     },
     bulkStats() {
@@ -265,7 +393,20 @@ createApp({
       if (type) this.form.category = type;
 
       const track = get('track', 'Track');
-      if (track && DEVROOMS[track]) this.form.track = track;
+      if (track) {
+        const lowerTrack = track.toLowerCase();
+        if (lowerTrack === 'main' || lowerTrack === 'main track' || lowerTrack === 'main-track') {
+          this.form.track = 'Main Track';
+        } else if (DEVROOMS[track]) {
+          this.form.track = track;
+        }
+      }
+
+      const color = get('color', 'Color', 'theme');
+      if (color && MAIN_TRACK_COLORS[color.toLowerCase()]) {
+        this.form.color = color.toLowerCase();
+        if (!track) this.form.track = 'Main Track';
+      }
 
       // ?debug — ghost the reference mockup over the card to pixel-compare.
       // ?debug=0.3 sets the overlay opacity (0–1).
@@ -276,7 +417,6 @@ createApp({
       }
 
       const designation = get('designation');
-      if (designation) this.form.designation = designation;
     },
 
     /* ── Image handling ── */
@@ -388,6 +528,7 @@ createApp({
           title: s.title,
           category: s.category,
           track: s.track,
+          color: s.color || 'red',
           designation: s.designation || '',
         });
         this.imageDataUrl = s.imageDataUrl || null;
@@ -432,7 +573,19 @@ createApp({
         .replace(/^-|-$/g, '') || 'speaker';
     },
 
-    devroomStyle(trackName) {
+    devroomStyle(trackName, colorKey) {
+      if (trackName === 'Main Track') {
+        const color = colorKey || (this.form && this.form.track === 'Main Track' ? this.form.color : 'red') || 'red';
+        const c = MAIN_TRACK_COLORS[color] || MAIN_TRACK_COLORS.red;
+        return {
+          label: 'Main Track',
+          stroke: c.stroke,
+          accent: c.accent,
+          patternImg: c.patternImg,
+          photoBackgroundGradient: c.photoBackgroundGradient,
+          infoBackgroundGradient: c.infoBackgroundGradient,
+        };
+      }
       return DEVROOMS[trackName] || DEVROOMS[DEFAULT_DEVROOM];
     },
 
@@ -443,6 +596,9 @@ createApp({
         type: speaker.category,
         track: speaker.track,
       });
+      if (speaker.track === 'Main Track' && speaker.color) {
+        params.set('color', speaker.color);
+      }
       return window.location.origin + window.location.pathname + '?' + params.toString();
     },
 
@@ -456,6 +612,7 @@ createApp({
         title: speaker.title,
         category: speaker.category,
         track: speaker.track,
+        color: speaker.color || 'red',
         designation: speaker.designation || '',
       });
       this.imageDataUrl = speaker.imageDataUrl || null;
@@ -471,6 +628,12 @@ createApp({
       if (d.patternImg) {
         const img = new Image();
         img.src = d.patternImg;
+      }
+    });
+    Object.values(MAIN_TRACK_COLORS).forEach((c) => {
+      if (c.patternImg) {
+        const img = new Image();
+        img.src = c.patternImg;
       }
     });
   },

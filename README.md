@@ -42,25 +42,43 @@ generator/
 > **served over HTTP** (the quick-start below) — opening `index.html` directly from
 > the filesystem (`file://`) will not load them.
 
-## Devroom colours
+## Devroom and Main Track colours
 
-Each devroom is themed by a **Stroke** colour (torn band + photo card + pill accent) and a
-**Doodle** colour (the lighter tone the doodle field is recoloured to). Defined in `DEVROOMS`
-in `script.js`. All eight devrooms are wired up:
+### Main Track
 
-| Devroom | Stroke | Doodle (bg) |
+Main Track supports 9 switchable pattern color themes. Each has a dedicated background pattern, accent/stroke color, and radial/linear gradients for the speaker photo inside container and speaker info card:
+
+| Color | Accent / Stroke | Background Pattern |
 |---|---|---|
-| Open Design Devroom | `#FF4EC4` | `#FF95DB` |
-| Cloud & Devops Devroom | `#85A1FF` | `#85A1FF` |
-| Compiler Devroom | `#E77D74` | `#F0AEA8` |
-| AOSP Devroom | `#00C603` | `#94FF96` |
-| Documentation Devroom | `#A14CEC` | `#E2C8F9` |
-| Open Hardware Devroom | `#FABA75` | `#FEB567` |
-| Security Devroom | `#04C7BD` | `#87FDF7` |
-| RTOS Devroom | `#A6AF00` | `#BACC5C` |
+| **Red** | `#FF643E` | `patterns/red.png` |
+| **Yellow** | `#F5AB00` | `patterns/yellow.png` |
+| **Pink** | `#E45CFF` | `patterns/pink.png` |
+| **Violet** | `#8A5CFF` | `patterns/violet.png` |
+| **Lime** | `#9BC71A` | `patterns/lime.png` |
+| **Green** | `#00D668` | `patterns/green.png` |
+| **Mint** | `#00C2AE` | `patterns/mint.png` |
+| **Blue** | `#4BA2FF` | `patterns/blue.png` |
+| **Ruby** | `#FF3C74` | `patterns/ruby.png` |
 
-Pills use a deeper, readable `accent` shade of the stroke (see `script.js`). The devroom's
-dropdown key (e.g. `AOSP Devroom`) is the exact value matched against the CSV `Track` column
+Use `?track=Main+Track&color=ruby` in the URL or select **Main Track** in the generator to switch colors.
+
+### Devroom colours
+
+Each devroom is themed by a **Stroke** colour and pattern. Defined in `DEVROOMS` in `script.js`:
+
+| Devroom | Stroke | Pattern |
+|---|---|---|
+| Open Design Devroom | `#D93AA4` | `patterns/open-design-devroom-pattern.png` |
+| Cloud & Devops Devroom | `#4D76FF` | `patterns/cloud-&-devops-devroom-pattern.png` |
+| Compiler Devroom | `#D35849` | `patterns/compilers-devroom-pattern.png` |
+| AOSP Devroom | `#00B203` | `patterns/aosp-devroom-pattern.png` |
+| Documentation Devroom | `#9739EA` | `patterns/documention-devroom-pattern.png` |
+| Open Hardware Devroom | `#E37601` | `patterns/open-hardware-devroom-pattern.png` |
+| Security Devroom | `#03B4AB` | `patterns/security-devroom-pattern.png` |
+| RTOS Devroom | `#A6AF00` | `patterns/rtos-devroom-pattern.png` |
+
+Pills use a deeper, readable `accent` shade of the stroke (see `script.js`). The track's
+dropdown key (e.g. `Main Track`, `AOSP Devroom`) is the exact value matched against the CSV `Track` column
 and the `?track=` query param.
 
 ## Debug overlay

@@ -52,19 +52,19 @@ body {
   margin-bottom: 16px;
   border-radius: 8px;
   border: 1px solid #dddddd;
-  background-color: #fafafa;
+  background-color: #ffffff;
   outline: none;
 }
 
 input:focus, select:focus, textarea:focus{
-  background-color: #fafafa;
+  background-color: #ffffff;
   border: 1px solid #666666;
   color: #4b4b4b;
 }
 
 input:hover, select:hover, textarea:hover{
   transition: 0.3s;
-  background-color: #fafafa;
+  background-color: #ffffff;
   border: 1px solid #666666;
   box-shadow: 4px 4px 16px #00000015;
   color: #4b4b4b;
@@ -120,7 +120,7 @@ input:hover, select:hover, textarea:hover{
     hsl(360, 70%, 50%)
   );
   outline: none;
-  border: 2px solid #fafafa;
+  border: 2px solid #ffffff;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   position: relative;
@@ -134,7 +134,7 @@ input:hover, select:hover, textarea:hover{
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #fafafa;
+  background: #ffffff;
   border: 3px solid #333333;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -150,7 +150,7 @@ input:hover, select:hover, textarea:hover{
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: #fafafa;
+  background: #ffffff;
   border: 3px solid #333333;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -331,7 +331,7 @@ input::file-selector-button {
     font-family: "Bebas Neue", sans-serif;
     font-size: 43px;
     font-weight: 400;
-    color: #fafafa;
+    color: #ffffff;
     line-height: 1.2;
     letter-spacing: 1px;
     text-align: right;
@@ -340,7 +340,7 @@ input::file-selector-button {
 .speaker-designation {
     font-size: 32px;
     font-weight: 600;
-    color: #fafafabb;
+    color: #ffffffbb;
     line-height: 1.2;
     letter-spacing: -.4px;
     text-align: right;
@@ -364,7 +364,7 @@ input::file-selector-button {
 }
 
 .header {
-  background-color: #fafafa;
+  background-color: #ffffff;
   border: 1px solid #999999;
   border-radius: 24px;
   padding: 12px 24px;
@@ -443,7 +443,7 @@ h4 {
 
 button {
   background-color: #1a1a1a;
-  color: #fafafa;
+  color: #ffffff;
   border-radius: 8px;
   border: 0px;
   padding: 12px 24px;
@@ -457,6 +457,6 @@ button {
 button:hover {
   transition: 0.3s;
   background-color: #4b4b4b;
-  color: #fafafa;
+  color: #ffffff;
   cursor: pointer;
 }
