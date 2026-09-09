@@ -22,7 +22,7 @@ python3 -m http.server 8080
 
 | Session Type | Track | Full Name | Title | Post desc |
 |---|---|---|---|---|
-| Talk | Main Track | Speaker Name | Talk Title | Short description |
+| Talk | General Track | Speaker Name | Talk Title | Short description |
 
 See `generator/sample.csv` for a complete example with all columns.
 
@@ -42,11 +42,11 @@ generator/
 > **served over HTTP** (the quick-start below) — opening `index.html` directly from
 > the filesystem (`file://`) will not load them.
 
-## Devroom and Main Track colours
+## Devroom and General Track colours
 
-### Main Track
+### General Track
 
-Main Track supports 9 switchable pattern color themes. Each has a dedicated background pattern, accent/stroke color, and radial/linear gradients for the speaker photo inside container and speaker info card:
+General Track supports 9 switchable pattern color themes. Each has a dedicated background pattern, accent/stroke color, and radial/linear gradients for the speaker photo inside container and speaker info card:
 
 | Color | Accent / Stroke | Background Pattern |
 |---|---|---|
@@ -60,7 +60,7 @@ Main Track supports 9 switchable pattern color themes. Each has a dedicated back
 | **Blue** | `#4BA2FF` | `patterns/blue.png` |
 | **Ruby** | `#FF3C74` | `patterns/ruby.png` |
 
-Use `?track=Main+Track&color=ruby` in the URL or select **Main Track** in the generator to switch colors.
+Use `?track=Main+Track&color=ruby` in the URL or select **General Track** in the generator to switch colors.
 
 ### Devroom colours
 
@@ -78,7 +78,7 @@ Each devroom is themed by a **Stroke** colour and pattern. Defined in `DEVROOMS`
 | RTOS Devroom | `#A6AF00` | `patterns/rtos-devroom-pattern.png` |
 
 Pills use a deeper, readable `accent` shade of the stroke (see `script.js`). The track's
-dropdown key (e.g. `Main Track`, `AOSP Devroom`) is the exact value matched against the CSV `Track` column
+dropdown key (e.g. `General Track`, `AOSP Devroom`) is the exact value matched against the CSV `Track` column
 and the `?track=` query param.
 
 ## Debug overlay

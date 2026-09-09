@@ -79,7 +79,7 @@
 .card-title-wrap {
   position: relative;
   z-index: 2;
-  margin-top: 50px;
+  margin-top: 60px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

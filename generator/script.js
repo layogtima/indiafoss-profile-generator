@@ -4,7 +4,7 @@
  */
 
 /*
- * Main Track color variants.
+ * General Track color variants.
  * Each color variant defines:
  *  - `name`: display name
  *  - `accent`: pill text & accent color
@@ -98,10 +98,10 @@ const MAIN_TRACK_COLORS = {
  * `Track` column and the ?track= query param — keep it stable.
  */
 const DEVROOMS = {
-  /* Main Track theming is resolved dynamically in the activeDevroom computed
+  /* General Track theming is resolved dynamically in the activeDevroom computed
      property based on form.color. This entry only provides the dropdown key + label. */
-  'Main Track': {
-    label: 'Main Track',
+  'General Track': {
+    label: 'General Track',
     stroke: '#FF643E',   // red default — overridden by activeDevroom when selected
     accent: '#FF643E',
     patternImg: 'patterns/red.png',
@@ -166,7 +166,7 @@ const DEVROOMS = {
   },
 };
 
-const DEFAULT_DEVROOM = 'Main Track';
+const DEFAULT_DEVROOM = 'General Track';
 
 /* Reference mockups for the ?debug pixel-compare overlay (only these two exist). */
 const DEBUG_OVERLAYS = {
@@ -242,7 +242,7 @@ function parseCSV(text) {
 
     const lowerRawTrack = rawTrack.toLowerCase();
     if (lowerRawTrack.includes('main')) {
-      track = 'Main Track';
+      track = 'General Track';
       for (const colorKey of Object.keys(MAIN_TRACK_COLORS)) {
         if (lowerRawTrack.includes(colorKey)) {
           color = colorKey;
@@ -303,10 +303,10 @@ createApp({
       return MAIN_TRACK_COLORS;
     },
     activeDevroom() {
-      if (this.form.track === 'Main Track') {
+      if (this.form.track === 'General Track') {
         const c = this.activeMainTrackColor;
         return {
-          label: 'Main Track',
+          label: 'General Track',
           stroke: c.stroke,
           accent: c.accent,
           patternImg: c.patternImg,
@@ -397,8 +397,8 @@ createApp({
       const track = get('track', 'Track');
       if (track) {
         const lowerTrack = track.toLowerCase();
-        if (lowerTrack === 'main' || lowerTrack === 'main track' || lowerTrack === 'main-track') {
-          this.form.track = 'Main Track';
+        if (lowerTrack === 'main' || lowerTrack === 'General Track' || lowerTrack === 'general-track') {
+          this.form.track = 'General Track';
         } else if (DEVROOMS[track]) {
           this.form.track = track;
         }
@@ -407,7 +407,7 @@ createApp({
       const color = get('color', 'Color', 'theme');
       if (color && MAIN_TRACK_COLORS[color.toLowerCase()]) {
         this.form.color = color.toLowerCase();
-        if (!track) this.form.track = 'Main Track';
+        if (!track) this.form.track = 'General Track';
       }
 
       // ?debug — ghost the reference mockup over the card to pixel-compare.
@@ -577,11 +577,11 @@ createApp({
     },
 
     devroomStyle(trackName, colorKey) {
-      if (trackName === 'Main Track') {
-        const color = colorKey || (this.form && this.form.track === 'Main Track' ? this.form.color : 'red') || 'red';
+      if (trackName === 'General Track') {
+        const color = colorKey || (this.form && this.form.track === 'General Track' ? this.form.color : 'red') || 'red';
         const c = MAIN_TRACK_COLORS[color] || MAIN_TRACK_COLORS.red;
         return {
-          label: 'Main Track',
+          label: 'General Track',
           stroke: c.stroke,
           accent: c.accent,
           patternImg: c.patternImg,
@@ -599,7 +599,7 @@ createApp({
         type: speaker.category,
         track: speaker.track,
       });
-      if (speaker.track === 'Main Track' && speaker.color) {
+      if (speaker.track === 'General Track' && speaker.color) {
         params.set('color', speaker.color);
       }
       return window.location.origin + window.location.pathname + '?' + params.toString();
