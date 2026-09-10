@@ -74,12 +74,22 @@
   font-weight: 700;
 }
 
+/* ── Centered content area (title + speaker card) ── */
+
+.card-content-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  gap: 80px;
+  margin: auto 0;
+  padding-bottom: 120px; /* account for the absolute footer height */
+}
+
 /* ── Pills & Title ── */
 
 .card-title-wrap {
   position: relative;
   z-index: 2;
-  margin-top: 60px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -128,7 +138,7 @@
   position: relative;
   z-index: 2; /* keep the title above the photo card if a long title reaches it */
   margin: 0;
-  font-size: 50px;
+  font-size: 54px;
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.04em;
@@ -140,10 +150,7 @@
 /* ── Speaker card (photo + info) ── */
 
 .speaker-card {
-  position: absolute;
-  bottom: 205px; /* 131px above the 74px card-footer */
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
   display: inline-flex;
   justify-content: center;
   align-items: flex-end;
@@ -228,7 +235,7 @@
 
 .speaker-name {
   font-size: 43px;
-  font-weight: 600;
+  font-weight: 500;
   color: #ffffff;
   letter-spacing: -0.02em;
   line-height: 1.15;

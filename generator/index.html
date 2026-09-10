@@ -205,24 +205,27 @@
             </div>
           </div>
 
-          <!-- Pills & Title wrapper -->
-          <div class="card-title-wrap">
-            <!-- Pills -->
-            <div class="card-pills" :style="{ '--pill-bg': pillBg }">
-              <span class="card-pill card-pill-devroom" :style="{ color: accentColor }">
-                {{ activeDevroom.label }}
-              </span>
-              <span class="card-pill card-pill-type" :style="{ color: accentColor }">
-                {{ form.category || 'Talk' }}
-              </span>
+          <!-- Centered content: Pills/Title + Speaker card -->
+          <div class="card-content-wrap">
+
+            <!-- Pills & Title wrapper -->
+            <div class="card-title-wrap">
+              <!-- Pills -->
+              <div class="card-pills" :style="{ '--pill-bg': pillBg }">
+                <span class="card-pill card-pill-devroom" :style="{ color: accentColor }">
+                  {{ activeDevroom.label }}
+                </span>
+                <span class="card-pill card-pill-type" :style="{ color: accentColor }">
+                  {{ form.category || 'Talk' }}
+                </span>
+              </div>
+
+              <!-- Title -->
+              <h1 class="card-title">{{ cardTitle }}</h1>
             </div>
 
-            <!-- Title -->
-            <h1 class="card-title">{{ form.title || 'Talk title goes here...' }}</h1>
-          </div>
-
-          <!-- Speaker card -->
-          <div class="speaker-card">
+            <!-- Speaker card -->
+            <div class="speaker-card">
             <div class="speaker-photo-wrap">
               <div class="inside" :style="{ background: photoBgGradient }"></div>
               <div class="speaker-photo" :style="photoStyle">
@@ -238,10 +241,14 @@
               <div class="speaker-name">{{ form.name || 'Name of the Speaker' }}</div>
               <div class="speaker-designation" v-if="form.designation || !form.name">{{ form.designation || 'Designation of the Speaker' }}</div>
             </div>
+            </div>
+
           </div>
+          <!-- /card-content-wrap -->
 
           </div>
           <!-- /Foreground -->
+
 
           <!-- Footer -->
           <div class="card-footer">

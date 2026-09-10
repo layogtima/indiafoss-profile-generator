@@ -355,6 +355,10 @@ createApp({
     categories() {
       return CATEGORIES;
     },
+    cardTitle() {
+      const title = this.form.title || 'Talk title goes here...';
+      return title.length > 95 ? title.slice(0, 95).trimEnd() + '...' : title;
+    },
     filteredSpeakers() {
       if (!this.bulkSearch) return this.speakers;
       const q = this.bulkSearch.toLowerCase();
