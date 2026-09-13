@@ -80,7 +80,7 @@
   position: relative;
   z-index: 2;
   margin-top: auto;
-  margin-bottom: 80px;
+  margin-bottom: 60px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -142,7 +142,7 @@
 
 .speaker-card {
   position: relative;
-  margin-bottom: 200px;
+  margin-bottom: 215px;
   align-self: center;
   display: inline-flex;
   justify-content: center;
