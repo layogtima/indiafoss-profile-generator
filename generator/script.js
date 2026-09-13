@@ -202,66 +202,222 @@ const PLACEHOLDER_IMAGE =
       '</svg>',
   );
 
-/* ── CSV parser (handles quoted fields with commas) ── */
+/* ── Track & Category resolvers ── */
 
-function parseCSVLine(line) {
-  const values = [];
-  let current = '';
+function resolveTrack(rawTrack) {
+  if (!rawTrack) return DEFAULT_DEVROOM;
+  const trimmed = rawTrack.trim();
+  if (DEVROOMS[trimmed]) return trimmed;
+
+  const lower = trimmed.toLowerCase();
+  if (lower.includes('main') || lower.includes('general')) {
+    return 'General Track';
+  }
+  if (lower.includes('cloud') || lower.includes('devops')) {
+    return 'Cloud and Devops Devroom';
+  }
+  if (lower.includes('compiler')) {
+    return 'Compiler Devroom';
+  }
+  if (lower.includes('aosp') || lower.includes('android')) {
+    return 'AOSP Devroom';
+  }
+  if (lower.includes('doc')) {
+    return 'Documentation Devroom';
+  }
+  if (lower.includes('hardware')) {
+    return 'Open Hardware Devroom';
+  }
+  if (lower.includes('security')) {
+    return 'Security Devroom';
+  }
+  if (lower.includes('rtos') || lower.includes('real time')) {
+    return 'RTOS Devroom';
+  }
+  if (lower.includes('design')) {
+    return 'Open Design Devroom';
+  }
+
+  for (const name of Object.keys(DEVROOMS)) {
+    if (name.toLowerCase() === lower) return name;
+  }
+
+  return DEFAULT_DEVROOM;
+}
+
+function resolveCategory(rawCategory) {
+  if (!rawCategory) return 'Talk';
+  const trimmed = rawCategory.trim();
+  for (const cat of CATEGORIES) {
+    if (cat.toLowerCase() === trimmed.toLowerCase()) return cat;
+  }
+  const lower = trimmed.toLowerCase();
+  if (lower.includes('bof') || lower.includes('feather')) return 'BOF Session';
+  if (lower.includes('lightning')) return 'Lightning Talk';
+  if (lower.includes('workshop')) return 'Workshop';
+  if (lower.includes('panel')) return 'Panel Discussion';
+  if (lower.includes('invited')) return 'Invited Talk';
+  if (lower.includes('devroom')) return 'Devroom';
+  if (lower.includes('talk')) return 'Talk';
+  return trimmed;
+}
+
+/* ── CSV parser (RFC 4180 compliant: quotes, commas, escapes, multi-line) ── */
+
+function parseCSVRows(text) {
+  const cleanText = (text || '').replace(/^\uFEFF/, '');
+  const rows = [];
+  let currentVal = '';
+  let currentRow = [];
   let inQuotes = false;
 
-  for (const ch of line) {
+  for (let i = 0; i < cleanText.length; i++) {
+    const ch = cleanText[i];
     if (ch === '"') {
-      inQuotes = !inQuotes;
+      if (inQuotes && i + 1 < cleanText.length && cleanText[i + 1] === '"') {
+        currentVal += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
     } else if (ch === ',' && !inQuotes) {
-      values.push(current);
-      current = '';
+      currentRow.push(currentVal);
+      currentVal = '';
+    } else if ((ch === '\r' || ch === '\n') && !inQuotes) {
+      if (ch === '\r' && cleanText[i + 1] === '\n') {
+        i++;
+      }
+      currentRow.push(currentVal);
+      currentVal = '';
+      if (currentRow.some((v) => v.trim())) {
+        rows.push(currentRow);
+      }
+      currentRow = [];
     } else {
-      current += ch;
+      currentVal += ch;
     }
   }
-  values.push(current);
-  return values;
+  if (currentVal || currentRow.length) {
+    currentRow.push(currentVal);
+    if (currentRow.some((v) => v.trim())) {
+      rows.push(currentRow);
+    }
+  }
+  return rows;
+}
+
+function parseCSVLine(line) {
+  const rows = parseCSVRows(line);
+  return rows.length ? rows[0] : [];
 }
 
 function parseCSV(text) {
-  const lines = text.split(/\r?\n/).filter((l) => l.trim());
-  if (lines.length < 2) return [];
+  const rows = parseCSVRows(text);
+  if (rows.length < 2) return [];
 
-  const headers = parseCSVLine(lines[0]).map((h) => h.trim());
-  return lines.slice(1).reduce((acc, line) => {
-    const vals = parseCSVLine(line);
-    const row = {};
-    headers.forEach((h, i) => (row[h] = (vals[i] || '').trim()));
+  const headers = rows[0].map((h) => h.trim());
 
-    const name = row['Full Name'] || '';
+  let nameCol = -1;
+  let titleCol = -1;
+  let devroomCol = -1;
+  let typeCol = -1;
+  let statusCol = -1;
+  let linkCol = -1;
+  let designationCol = -1;
+  let colorCol = -1;
+  let hasWhichTrackCol = false;
+  let genericTrackCol = -1;
+
+  headers.forEach((h, idx) => {
+    const hl = h.toLowerCase();
+    if (hl.includes('which track') || hl.includes('applying for')) {
+      devroomCol = idx;
+      hasWhichTrackCol = true;
+    } else if (['devroom'].includes(hl)) {
+      devroomCol = idx;
+    } else if (['track'].includes(hl)) {
+      genericTrackCol = idx;
+    }
+
+    if (['session type', 'session_type', 'session-type', 'type', 'category'].includes(hl)) {
+      typeCol = idx;
+    }
+
+    if (['full name', 'speaker', 'name', 'speaker name', 'speaker_name'].includes(hl)) {
+      if (nameCol === -1 || hl === 'speaker' || hl === 'full name') {
+        nameCol = idx;
+      }
+    }
+
+    if (['session_title', 'session title', 'title', 'talk title', 'talk_title', 'topic'].includes(hl)) {
+      if (titleCol === -1 || hl === 'session_title' || hl === 'title') {
+        titleCol = idx;
+      }
+    }
+
+    if (['review_status', 'review status', 'status', 'review-status', 'post status', 'design status'].includes(hl)) {
+      if (statusCol === -1 || hl.includes('review')) {
+        statusCol = idx;
+      }
+    }
+
+    if (['link', 'url', 'proposal url', 'proposal_url'].includes(hl)) {
+      linkCol = idx;
+    }
+
+    if (['designation', 'role', 'bio', 'speaker bio', 'speaker_bio'].includes(hl)) {
+      designationCol = idx;
+    }
+
+    if (['color', 'colour', 'theme'].includes(hl)) {
+      colorCol = idx;
+    }
+  });
+
+  // In CFP submissions exports, "Which track are you applying for?" is the devroom,
+  // and the "track" column specifies the session type (Talk, Lightning Talk, etc.)
+  if (hasWhichTrackCol && genericTrackCol !== -1 && typeCol === -1) {
+    typeCol = genericTrackCol;
+  } else if (!hasWhichTrackCol && genericTrackCol !== -1 && devroomCol === -1) {
+    devroomCol = genericTrackCol;
+  }
+
+  return rows.slice(1).reduce((acc, vals) => {
+    const getVal = (colIdx) => (colIdx >= 0 && colIdx < vals.length ? vals[colIdx].trim() : '');
+
+    const name = getVal(nameCol);
     if (!name) return acc;
 
-    const rawTrack = row['Track'] || DEFAULT_DEVROOM;
-    let track = DEFAULT_DEVROOM;
-    let color = (row['Color'] || row['Colour'] || 'red').toLowerCase();
+    const title = getVal(titleCol);
+    const rawTrack = getVal(devroomCol);
+    const track = resolveTrack(rawTrack);
+    const rawType = getVal(typeCol);
+    const category = resolveCategory(rawType);
+    const status = getVal(statusCol);
+    const link = getVal(linkCol);
+    const designation = getVal(designationCol);
 
-    const lowerRawTrack = rawTrack.toLowerCase();
-    if (lowerRawTrack.includes('main')) {
-      track = 'General Track';
+    let color = getVal(colorCol).toLowerCase();
+    if (!color || !MAIN_TRACK_COLORS[color]) {
+      const lowerRawTrack = (rawTrack || '').toLowerCase();
+      color = 'red';
       for (const colorKey of Object.keys(MAIN_TRACK_COLORS)) {
         if (lowerRawTrack.includes(colorKey)) {
           color = colorKey;
           break;
         }
       }
-    } else if (DEVROOMS[rawTrack]) {
-      track = rawTrack;
-    } else {
-      track = DEFAULT_DEVROOM;
     }
 
     acc.push({
       name,
-      title: row['Title'] || '',
-      category: row['Session Type'] || 'Talk',
+      title,
+      category,
       track,
-      color: MAIN_TRACK_COLORS[color] ? color : 'red',
-      designation: row['Designation'] || '',
+      color,
+      designation,
+      status,
+      link,
       imageDataUrl: null,
     });
     return acc;
@@ -290,6 +446,8 @@ createApp({
       isDownloading: false,
       downloadProgress: { current: 0, total: 0 },
       bulkSearch: '',
+      statusFilter: 'all',
+      trackFilter: 'all',
       debug: false,
       debugOpacity: 0.5,
     };
@@ -359,21 +517,52 @@ createApp({
       const title = this.form.title || 'Talk title goes here...';
       return title.length > 95 ? title.slice(0, 95).trimEnd() + '...' : title;
     },
+    availableStatuses() {
+      const counts = {};
+      this.speakers.forEach((s) => {
+        if (s.status) {
+          counts[s.status] = (counts[s.status] || 0) + 1;
+        }
+      });
+      return Object.keys(counts)
+        .sort((a, b) => {
+          if (a.toLowerCase() === 'approved') return -1;
+          if (b.toLowerCase() === 'approved') return 1;
+          return a.localeCompare(b);
+        })
+        .map((status) => ({ name: status, count: counts[status] }));
+    },
     filteredSpeakers() {
-      if (!this.bulkSearch) return this.speakers;
-      const q = this.bulkSearch.toLowerCase();
-      return this.speakers.filter(
-        (s) =>
-          s.name.toLowerCase().includes(q) ||
-          s.title.toLowerCase().includes(q) ||
-          s.track.toLowerCase().includes(q) ||
-          (s.color && s.color.toLowerCase().includes(q)),
-      );
+      let list = this.speakers;
+
+      if (this.statusFilter && this.statusFilter !== 'all') {
+        const sf = this.statusFilter.toLowerCase();
+        list = list.filter((s) => (s.status || '').toLowerCase() === sf);
+      }
+
+      if (this.trackFilter && this.trackFilter !== 'all') {
+        list = list.filter((s) => s.track === this.trackFilter);
+      }
+
+      if (this.bulkSearch) {
+        const q = this.bulkSearch.toLowerCase().trim();
+        list = list.filter(
+          (s) =>
+            s.name.toLowerCase().includes(q) ||
+            s.title.toLowerCase().includes(q) ||
+            s.track.toLowerCase().includes(q) ||
+            s.category.toLowerCase().includes(q) ||
+            (s.status && s.status.toLowerCase().includes(q)) ||
+            (s.color && s.color.toLowerCase().includes(q)),
+        );
+      }
+      return list;
     },
     bulkStats() {
       const total = this.speakers.length;
-      const withImage = this.speakers.filter((s) => s.imageDataUrl).length;
-      return { total, withImage };
+      const filtered = this.filteredSpeakers.length;
+      const withImage = this.filteredSpeakers.filter((s) => s.imageDataUrl).length;
+      return { total, filtered, withImage };
     },
   },
 
@@ -396,16 +585,11 @@ createApp({
       if (title) this.form.title = title;
 
       const type = get('type', 'category', 'Session Type');
-      if (type) this.form.category = type;
+      if (type) this.form.category = resolveCategory(type);
 
       const track = get('track', 'Track');
       if (track) {
-        const lowerTrack = track.toLowerCase();
-        if (lowerTrack === 'main' || lowerTrack === 'General Track' || lowerTrack === 'general-track') {
-          this.form.track = 'General Track';
-        } else if (DEVROOMS[track]) {
-          this.form.track = track;
-        }
+        this.form.track = resolveTrack(track);
       }
 
       const color = get('color', 'Color', 'theme');
@@ -424,6 +608,15 @@ createApp({
 
       const designation = get('designation');
       if (designation) this.form.designation = designation;
+    },
+
+    statusBadgeClass(status) {
+      const s = (status || '').toLowerCase();
+      if (s === 'approved') return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      if (s === 'screening') return 'bg-amber-50 text-amber-700 border-amber-200';
+      if (s === 'rejected') return 'bg-rose-50 text-rose-700 border-rose-200';
+      if (s === 'withdrawn') return 'bg-gray-100 text-gray-600 border-gray-200';
+      return 'bg-blue-50 text-blue-700 border-blue-200';
     },
 
     /* ── Image handling ── */
@@ -464,14 +657,46 @@ createApp({
       const reader = new FileReader();
       reader.onload = (e) => {
         this.speakers = parseCSV(e.target.result);
+        const hasApproved = this.speakers.some(
+          (s) => s.status && s.status.toLowerCase() === 'approved',
+        );
+        this.statusFilter = hasApproved ? 'Approved' : 'all';
+        this.trackFilter = 'all';
+        this.bulkSearch = '';
       };
       reader.readAsText(file);
     },
 
     async loadSampleCSV() {
-      const res = await fetch('sample.csv');
-      const text = await res.text();
-      this.speakers = parseCSV(text);
+      try {
+        const res = await fetch('sample.csv');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const text = await res.text();
+        this.speakers = parseCSV(text);
+        this.statusFilter = 'all';
+        this.trackFilter = 'all';
+        this.bulkSearch = '';
+      } catch (err) {
+        console.error('Could not load sample.csv:', err);
+      }
+    },
+
+    async loadSubmissionsCSV() {
+      try {
+        const res = await fetch('IndiaFOSS 2026-submissions.csv');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const text = await res.text();
+        this.speakers = parseCSV(text);
+        const hasApproved = this.speakers.some(
+          (s) => s.status && s.status.toLowerCase() === 'approved',
+        );
+        this.statusFilter = hasApproved ? 'Approved' : 'all';
+        this.trackFilter = 'all';
+        this.bulkSearch = '';
+      } catch (err) {
+        console.error('Could not load IndiaFOSS 2026-submissions.csv:', err);
+        alert('Could not automatically fetch IndiaFOSS 2026-submissions.csv. Please use the "Upload Speaker CSV" button above to select the file.');
+      }
     },
 
     /* ── Single card download ── */
@@ -506,10 +731,11 @@ createApp({
 
     /* ── Bulk download (ZIP) ── */
     async downloadAllCards(format) {
-      if (!this.speakers.length) return;
+      const targets = this.filteredSpeakers;
+      if (!targets.length) return;
 
       this.isDownloading = true;
-      this.downloadProgress = { current: 0, total: this.speakers.length };
+      this.downloadProgress = { current: 0, total: targets.length };
 
       const savedForm = { ...this.form };
       const savedImage = this.imageDataUrl;
@@ -527,9 +753,10 @@ createApp({
 
       const zip = new JSZip();
       const fn = format === 'jpeg' ? htmlToImage.toJpeg : htmlToImage.toPng;
+      const usedFilenames = new Set();
 
-      for (let i = 0; i < this.speakers.length; i++) {
-        const s = this.speakers[i];
+      for (let i = 0; i < targets.length; i++) {
+        const s = targets[i];
         Object.assign(this.form, {
           name: s.name,
           title: s.title,
@@ -550,7 +777,15 @@ createApp({
         });
 
         const blob = await fetch(dataUrl).then((r) => r.blob());
-        zip.file(this.slugify(s.name) + '.' + format, blob);
+        const baseName = this.slugify(s.name || 'speaker');
+        let filename = `${baseName}.${format}`;
+        let counter = 2;
+        while (usedFilenames.has(filename)) {
+          filename = `${baseName}-${counter}.${format}`;
+          counter++;
+        }
+        usedFilenames.add(filename);
+        zip.file(filename, blob);
         this.downloadProgress.current = i + 1;
       }
 
