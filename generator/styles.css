@@ -212,7 +212,7 @@
 
 .speaker-info {
   display: flex;
-  height: 185.114px;
+  height: fit-content;
   transform: rotate(3.75deg);
   padding: 35px 25px;
   flex-direction: column;

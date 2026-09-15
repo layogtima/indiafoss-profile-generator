@@ -206,7 +206,7 @@
           </div>
 
           <!-- Pills & Title wrapper -->
-          <div class="card-title-wrap">
+          <div class="card-title-wrap" :style="{ marginBottom: cardTitle.length <= 25 ? '100px' : '60px' }">
             <!-- Pills -->
             <div class="card-pills" :style="{ '--pill-bg': pillBg }">
               <span class="card-pill card-pill-devroom" :style="{ color: accentColor }">
